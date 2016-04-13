@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-mail="http://www.springframework.org/schema/integration/mail"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/mail http://www.springframework.org/schema/integration/mail/spring-integration-mail.xsd">
+
+	<util:properties id="javaMailProperties">
+		<beans:prop key="mail.imap.socketFactory.class">${spring.mail.properties.socketFactory}
+		</beans:prop>
+		<beans:prop key="mail.imap.socketFactory.fallback">${spring.mail.properties.fallback}
+		</beans:prop>
+		<beans:prop key="mail.store.protocol">${spring.mail.properties.protocol}
+		</beans:prop>
+		<beans:prop key="mail.debug">${spring.mail.properties.debug}
+		</beans:prop>
+	</util:properties>
+
+	<int-mail:imap-idle-channel-adapter
+		id="imapIdleAdaptar"
+		store-uri="${spring.mail.protocol}://#{credentials.mailCredentials}@#{credentials.mailHost}/${spring.mail.properties.folder}"
+		channel="recieveEmailChannel" auto-startup="true"
+		should-delete-messages="true" java-mail-properties="javaMailProperties" />
+	<int:channel id="recieveEmailChannel">
+		<int:interceptors>
+			<int:wire-tap channel="logger" />
+		</int:interceptors>
+	</int:channel>
+
+	<int:logging-channel-adapter id="logger"
+		level="INFO" />
+	<int:service-activator input-channel="recieveEmailChannel"
+		ref="mailReceiverService" method="receive" />
+</beans:beans>

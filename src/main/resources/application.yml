@@ -1,0 +1,56 @@
+#Server properties
+server:
+  port: 8080
+  compression:
+    enabled: true
+    
+spring:
+  #Mail properties
+  mail:
+    protocol: imaps
+    properties:
+      socketFactory: javax.net.ssl.SSLSocketFactory
+      fallback: false
+      protocol: imaps
+      debug: false
+      folder: iOps
+  #MongoDB propeties
+  data:
+    mongodb:
+      uri: mongodb://localhost/iops
+#Logging properties      
+logging:
+  level:
+    com.mns.ops: INFO
+    com.mns.ops.aop: DEBUG
+    com.mns.ops.framework.mail.reader.instruction: DEBUG
+#Custom properties
+custom:
+  akamai:
+    enabled: true
+  integration:
+    url: http://localhost:8081/
+#End
+---
+#Cloud configs
+spring:
+  profiles: cloud
+#End
+---
+#Test configs
+spring:
+  profiles: test
+  #MongoDB propeties
+  data:
+    mongodb:
+      uri: mongodb://localhost/test
+#End
+---
+#Test configs
+spring:
+  profiles: heroku
+#Custom propeties
+custom:
+  integration:
+    url: https://incredibleconnect.herokuapp.com
+#End

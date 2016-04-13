@@ -1,0 +1,49 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IDE working files
+*.iws
+*.ipr
+*.iml
+.idea/
+.settings
+.classpath
+.metadata/
+.eclipse-pmd
+
+# Build directories
+target
+node_modules/
+
+# Build and test files
+*.log*
+*.lck
+
+# OS generated files
+.DS_Store
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Gradle
+.gradletasknamecache
+.gradle/
+build/
+bin/
+
+# built application files
+*.apk
+*.ap_
+
+# Spring Beans
+rebel.xml
