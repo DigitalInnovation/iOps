@@ -1,5 +1,5 @@
 # Incredible Operations (iOps)
-Application for .COM operations that will be used for automating most of the monitoring and reporting tasks. Few of the functionalities include:
+Application for operations that will be used for automating most of the monitoring and reporting tasks. Few of the functionalities include:
 - Parsing emails for monitoring and reporting purpose:
   - Splunk Alerts
   - iLA Alerts

@@ -27,9 +27,9 @@ repositories {
 
 
 dependencies {
-compile('org.springframework.boot:spring-boot-starter-aop')
+	compile('org.springframework.boot:spring-boot-starter-aop')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-compile('org.springframework.boot:spring-boot-starter-integration')
+	compile('org.springframework.boot:spring-boot-starter-integration')
 	compile('org.springframework.integration:spring-integration-core')
 	compile('org.springframework.integration:spring-integration-mail')	
 	compile('org.springframework.boot:spring-boot-starter-mail')
