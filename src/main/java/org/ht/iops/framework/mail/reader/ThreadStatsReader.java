@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.ht.iops.db.beans.CPUStats;
-import org.ht.iops.db.beans.ThreadStats;
-import org.ht.iops.db.repository.ThreadStatsRepository;
+import org.ht.iops.db.beans.reader.CPUStats;
+import org.ht.iops.db.beans.reader.ThreadStats;
+import org.ht.iops.db.repository.reader.ThreadStatsRepository;
 import org.ht.iops.framework.mail.MailConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

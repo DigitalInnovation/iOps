@@ -1,4 +1,4 @@
-package org.ht.iops.db.beans;
+package org.ht.iops.db.beans.reader;
 
 import java.util.Date;
 

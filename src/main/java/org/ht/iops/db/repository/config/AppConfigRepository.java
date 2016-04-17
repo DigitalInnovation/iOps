@@ -1,7 +1,7 @@
-package org.ht.iops.db.repository;
+package org.ht.iops.db.repository.config;
 
 import org.bson.types.ObjectId;
-import org.ht.iops.db.beans.AppConfig;
+import org.ht.iops.db.beans.config.AppConfig;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface AppConfigRepository

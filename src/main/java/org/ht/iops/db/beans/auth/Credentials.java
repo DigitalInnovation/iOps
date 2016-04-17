@@ -1,4 +1,4 @@
-package org.ht.iops.db.beans;
+package org.ht.iops.db.beans.auth;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

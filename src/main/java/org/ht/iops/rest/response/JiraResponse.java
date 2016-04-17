@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JiraResponse {
+public class JiraResponse extends RestResponse {
 	private String id;
 	private String key;
 	private String self;

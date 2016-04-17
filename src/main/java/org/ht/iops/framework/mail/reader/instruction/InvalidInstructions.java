@@ -13,7 +13,15 @@ public class InvalidInstructions extends OpsInstructions {
 	}
 
 	@Override
-	protected void sendRestRequest(List<String> subjectTokens,
-			Map<String, String> bodyTokens) {
+	protected void validateSubjectTokens(List<String> subjectTokens) {
+	}
+
+	@Override
+	protected void validateBodyTokens(Map<String, String> bodyTokens) {
+	}
+
+	@Override
+	protected void addSubjectTokens(Map<String, String> instructions,
+			List<String> subjectTokens) {
 	}
 }

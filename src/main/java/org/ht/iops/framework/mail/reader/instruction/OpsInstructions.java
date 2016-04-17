@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
+import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
@@ -27,26 +28,26 @@ public abstract class OpsInstructions extends BaseMailReader {
 	protected Status postProcess(final MimeMessage message,
 			final MailData mailData) throws ApplicationException {
 		List<String> subjectTokens = parseSubject(mailData);
-		LOGGER.debug("Subject tokens: " + subjectTokens);
 		validateSubjectTokens(subjectTokens);
 		Map<String, String> bodyTokens = parseBody(mailData);
 		validateBodyTokens(bodyTokens);
-		sendRestRequest(subjectTokens, bodyTokens);
+		eventPublisher
+				.createEvent(createEvent(bodyTokens, subjectTokens, mailData));
 		return null;
 	}
 
-	protected List<String> parseSubject(final MailData mailData) {
-		return Arrays.asList(StringUtils.tokenizeToStringArray(
-				mailData.getSubject(), "|", true, false));
+	private List<String> parseSubject(final MailData mailData) {
+		List<String> subjectTokens = Arrays
+				.asList(StringUtils.tokenizeToStringArray(mailData.getSubject(),
+						"|", true, false));
+		LOGGER.debug("Subject tokens: " + subjectTokens);
+		return subjectTokens;
 	}
 
-	protected void validateSubjectTokens(final List<String> subjectTokens) {
-	}
+	protected abstract void validateSubjectTokens(
+			final List<String> subjectTokens);
 
-	protected void validateBodyTokens(final Map<String, String> bodyTokens) {
-	}
-
-	protected Map<String, String> parseBody(final MailData mailData) {
+	private Map<String, String> parseBody(final MailData mailData) {
 		Map<String, String> bodyTokens = new HashMap<>();
 		if (!StringUtils.isEmpty(mailData.getPlainContent())) {
 			parsePlainBody(mailData.getPlainContent(), bodyTokens);
@@ -56,7 +57,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 		return bodyTokens;
 	}
 
-	protected void parsePlainBody(final String plainContent,
+	private void parsePlainBody(final String plainContent,
 			final Map<String, String> bodyTokens) {
 		List<String> tokens = Arrays.asList(
 				StringUtils.tokenizeToStringArray(plainContent, "\r\n"));
@@ -68,7 +69,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 		LOGGER.debug("Plain body tokens: " + bodyTokens);
 	}
 
-	protected void parseHTMLBody(final Document htmlDocument,
+	private void parseHTMLBody(final Document htmlDocument,
 			final Map<String, String> bodyTokens) {
 		final StringBuffer plainContent = new StringBuffer("");
 		Elements elements = htmlDocument.getElementsByClass("WordSection1");
@@ -81,7 +82,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 		parsePlainBody(plainContent.toString(), bodyTokens);
 	}
 
-	protected void parseOutlookRichText(StringBuffer plainContent,
+	private void parseOutlookRichText(StringBuffer plainContent,
 			Document htmlDocument) {
 		Elements elements = htmlDocument.getElementsByTag("div");
 		elements.stream()
@@ -92,7 +93,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 				}));
 	}
 
-	protected void parseOutlookHTML(final StringBuffer plainContent,
+	private void parseOutlookHTML(final StringBuffer plainContent,
 			Elements elements) {
 		elements.first().childNodes().stream()
 				.filter(divElement -> divElement.toString().contains("<p"))
@@ -106,6 +107,9 @@ public abstract class OpsInstructions extends BaseMailReader {
 								}));
 	}
 
+	protected abstract void validateBodyTokens(
+			final Map<String, String> bodyTokens);
+
 	@Override
 	public Status getStatus(final String... strings) {
 		return null;
@@ -118,8 +122,17 @@ public abstract class OpsInstructions extends BaseMailReader {
 
 	protected abstract String getInstructionName();
 
-	protected void sendRestRequest(List<String> subjectTokens,
-			Map<String, String> bodyTokens) {
-		integrationService.processRequest(subjectTokens, bodyTokens);
+	protected IOpsEvent createEvent(final Map<String, String> bodyTokens,
+			final List<String> subjectTokens, final MailData mailData) {
+		Map<String, String> attributes = new HashMap<>();
+		attributes.putAll(bodyTokens);
+		addSubjectTokens(attributes, subjectTokens);
+		IOpsEvent iOpsEvent = createEvent(getInstructionName().toLowerCase(),
+				mailData);
+		iOpsEvent.setAttributes(attributes);
+		return iOpsEvent;
 	}
+
+	protected abstract void addSubjectTokens(Map<String, String> instructions,
+			List<String> subjectTokens);
 }

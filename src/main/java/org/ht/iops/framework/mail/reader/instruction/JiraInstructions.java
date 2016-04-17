@@ -16,7 +16,6 @@ public class JiraInstructions extends OpsInstructions {
 
 	@Override
 	protected void validateSubjectTokens(List<String> subjectTokens) {
-		super.validateSubjectTokens(subjectTokens);
 		if (subjectTokens.size() < 3
 				|| StringUtils.isEmpty(subjectTokens.get(2))) {
 			throw new ApplicationValidationException(
@@ -26,7 +25,6 @@ public class JiraInstructions extends OpsInstructions {
 
 	@Override
 	protected void validateBodyTokens(Map<String, String> bodyTokens) {
-		super.validateBodyTokens(bodyTokens);
 		String description = bodyTokens.get("description");
 		String owner = bodyTokens.get("owner");
 		if (StringUtils.isEmpty(description) || StringUtils.isEmpty(owner)) {
@@ -34,5 +32,11 @@ public class JiraInstructions extends OpsInstructions {
 					"Jira description and owner is a required field.",
 					getInstructionName());
 		}
+	}
+
+	@Override
+	protected void addSubjectTokens(final Map<String, String> instructions,
+			final List<String> subjectTokens) {
+		instructions.put("summary", subjectTokens.get(2));
 	}
 }

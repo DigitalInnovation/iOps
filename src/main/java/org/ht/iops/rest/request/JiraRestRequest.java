@@ -3,7 +3,7 @@ package org.ht.iops.rest.request;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JiraRestRequest {
+public class JiraRestRequest extends RestRequest {
 	private String projectName;
 	private String summary;
 	private String description;
@@ -115,5 +115,19 @@ public class JiraRestRequest {
 	 */
 	public void setRemainingEstimate(String remainingEstimate) {
 		this.remainingEstimate = remainingEstimate;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "JiraRestRequest [projectName=" + projectName + ", summary="
+				+ summary + ", description=" + description + ", labels="
+				+ labels + ", owner=" + owner + ", originalEstimate="
+				+ originalEstimate + ", remainingEstimate=" + remainingEstimate
+				+ "]";
 	}
 }

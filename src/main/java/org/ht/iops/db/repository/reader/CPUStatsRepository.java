@@ -1,9 +1,9 @@
-package org.ht.iops.db.repository;
+package org.ht.iops.db.repository.reader;
 
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.ht.iops.db.beans.CPUStats;
+import org.ht.iops.db.beans.reader.CPUStats;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface CPUStatsRepository

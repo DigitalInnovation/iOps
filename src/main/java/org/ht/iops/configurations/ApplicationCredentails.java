@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.ht.iops.db.beans.Credentials;
-import org.ht.iops.db.repository.CredentialRepository;
+import org.ht.iops.db.beans.auth.Credentials;
+import org.ht.iops.db.repository.auth.CredentialRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,8 @@ public class ApplicationCredentails {
 	private String mailHost = "";
 	private String akamaiCredentials = "";
 	private String akamaiHost = "";
+	private String mailUserName = "";
+	private String mailPassword = "";
 
 	@PostConstruct
 	public void initialize() {
@@ -57,6 +59,8 @@ public class ApplicationCredentails {
 			boolean mailCredentials) {
 		String password = credentials.getPassword();
 		if (mailCredentials) {
+			this.mailUserName = credentials.getUsername();
+			this.mailPassword = password;
 			password = password.replaceAll("@", "%40");
 		}
 		return credentials.getUsername() + ":" + password;
@@ -81,5 +85,19 @@ public class ApplicationCredentails {
 	 */
 	public String getAkamaiHost() {
 		return akamaiHost;
+	}
+
+	/**
+	 * @return the mailUserName
+	 */
+	public String getMailUserName() {
+		return mailUserName;
+	}
+
+	/**
+	 * @return the mailPassword
+	 */
+	public String getMailPassword() {
+		return mailPassword;
 	}
 }

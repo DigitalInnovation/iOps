@@ -21,15 +21,29 @@ spring:
 #Logging properties      
 logging:
   level:
-    com.mns.ops: INFO
-    com.mns.ops.aop: DEBUG
-    com.mns.ops.framework.mail.reader.instruction: DEBUG
+    org.ht.iops: INFO
+    org.ht.iops.aop: INFO
+    org.ht.iops.framework.mail.reader.instruction: INFO
+    org.ht.iops.events: DEBUG
+    org.ht.iops.integration: DEBUG
+    org.ht.iops.configurations: DEBUG
 #Custom properties
 custom:
   akamai:
     enabled: true
   integration:
     url: http://localhost:8081/
+  adapter:
+    jira:
+      properties:
+        name: PISP
+  mail:
+    protocol: smtp
+    port: 587
+    auth: true
+    debug: false
+    socketFactory: javax.net.ssl.SSLSocketFactory
+    fallback: true
 #End
 ---
 #Cloud configs

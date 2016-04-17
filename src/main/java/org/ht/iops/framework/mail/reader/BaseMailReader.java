@@ -3,11 +3,12 @@ package org.ht.iops.framework.mail.reader;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
-import org.ht.iops.db.repository.AppConfigRepository;
 import org.ht.iops.db.repository.StatusRepository;
+import org.ht.iops.db.repository.config.AppConfigRepository;
+import org.ht.iops.events.IOpsEvent;
+import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.framework.mail.MailData;
-import org.ht.iops.integration.IntegrationService;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public abstract class BaseMailReader {
 	@Autowired
 	protected AppConfigRepository appConfigRepository;
 	@Autowired
-	protected IntegrationService integrationService;
+	protected EventPublisher eventPublisher;
 
 	protected void preProcess(final MimeMessage message) {
 
@@ -71,5 +72,14 @@ public abstract class BaseMailReader {
 
 	protected boolean requireHTMLElements() {
 		return false;
+	}
+
+	protected IOpsEvent createEvent(final String type) {
+		return createEvent(type, null);
+	}
+
+	protected IOpsEvent createEvent(final String type,
+			final MailData mailData) {
+		return new IOpsEvent(type, mailData);
 	}
 }
