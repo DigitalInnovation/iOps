@@ -11,6 +11,7 @@ import org.ht.iops.events.IOpsEmailEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class EmailService {
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(EmailService.class);
 
+	@Value("#{credentials.mailUserName}")
+	private String username;
 	@Autowired
 	private JavaMailSender mailSender;
 	@Autowired
@@ -44,7 +47,7 @@ public class EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 			helper.setSubject(getSubject(subject, replyMode));
 			helper.setTo(sender);
-			helper.setFrom(new InternetAddress("htomar@sapient.com"));
+			helper.setFrom(new InternetAddress(username + "@sapient.com"));
 			helper.setText(htmlMessage, true);
 			mailSender.send(message);
 		} catch (MessagingException messagingException) {
