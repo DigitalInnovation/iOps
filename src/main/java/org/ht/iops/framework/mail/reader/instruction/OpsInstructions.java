@@ -8,8 +8,11 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
+import org.ht.iops.events.IOpsEmailEvent;
 import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.exception.ApplicationException;
+import org.ht.iops.exception.ApplicationRuntimeException;
+import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
 import org.jsoup.nodes.Document;
@@ -31,8 +34,18 @@ public abstract class OpsInstructions extends BaseMailReader {
 		validateSubjectTokens(subjectTokens);
 		Map<String, String> bodyTokens = parseBody(mailData);
 		validateBodyTokens(bodyTokens);
-		eventPublisher
-				.createEvent(createEvent(bodyTokens, subjectTokens, mailData));
+		try {
+			eventPublisher.createEvent(
+					createEvent(bodyTokens, subjectTokens, mailData));
+		} catch (ApplicationValidationException applicationValidationException) {
+			LOGGER.error("Validation error recieved, raising email event");
+			eventPublisher.createEvent(new IOpsEmailEvent(
+					applicationValidationException, mailData));
+		} catch (ApplicationRuntimeException runtimeException) {
+			LOGGER.error("Generic error recieved, raising email event");
+			eventPublisher.createEvent(
+					new IOpsEmailEvent(runtimeException, mailData));
+		}
 		return null;
 	}
 

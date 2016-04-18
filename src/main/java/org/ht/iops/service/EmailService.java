@@ -29,9 +29,8 @@ public class EmailService {
 	private TemplateRepository templateRepository;
 
 	public void sendResponseEmail(IOpsEmailEvent emailEvent) {
-		String message = templateRepository
-				.findByNameAndType(emailEvent.getType(), "success")
-				.getMessage();
+		String message = templateRepository.findByNameAndType(
+				emailEvent.getType(), emailEvent.getEventType()).getMessage();
 		sendEmail(emailEvent.getSender(), emailEvent.getSubject(),
 				MessageFormat.format(message, emailEvent.getTokens().get(0),
 						emailEvent.getTokens().get(1)),

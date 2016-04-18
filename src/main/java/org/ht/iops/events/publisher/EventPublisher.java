@@ -1,6 +1,7 @@
 package org.ht.iops.events.publisher;
 
 import org.ht.iops.events.AppEvent;
+import org.ht.iops.events.EmailEvent;
 import org.ht.iops.events.IOpsEmailEvent;
 import org.ht.iops.events.IOpsEvent;
 import org.slf4j.Logger;
@@ -27,7 +28,6 @@ public class EventPublisher {
 
 	public void createEvent(IOpsEmailEvent event) {
 		LOGGER.debug("Publishing email event : " + event);
-		this.eventPublisher
-				.publishEvent(new AppEvent<IOpsEmailEvent>(event));
+		this.eventPublisher.publishEvent(new EmailEvent<IOpsEmailEvent>(event));
 	}
 }

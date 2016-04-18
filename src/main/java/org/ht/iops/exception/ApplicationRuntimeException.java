@@ -9,7 +9,7 @@ public class ApplicationRuntimeException extends RuntimeException {
 	private String errorMessage;
 	private String type;
 
-	public ApplicationRuntimeException(String message, String type,
+	public ApplicationRuntimeException(final String message, final String type,
 			Throwable throwable) {
 		super(throwable);
 		this.customMessage = message;
@@ -17,9 +17,16 @@ public class ApplicationRuntimeException extends RuntimeException {
 		this.type = type;
 	}
 
-	public ApplicationRuntimeException(String type, Throwable throwable) {
+	public ApplicationRuntimeException(final String type,
+			final Throwable throwable) {
 		this("An exception occured while parsing email message.", type,
 				throwable);
+	}
+
+	public ApplicationRuntimeException(final String message,
+			final String type) {
+		super(message);
+		this.type = type;
 	}
 
 	/**
