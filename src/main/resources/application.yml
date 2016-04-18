@@ -41,7 +41,7 @@ custom:
     protocol: smtp
     port: 587
     auth: true
-    debug: true
+    debug: false
     socketFactory: javax.net.ssl.SSLSocketFactory
     fallback: true
 #End
