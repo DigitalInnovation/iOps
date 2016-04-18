@@ -24,7 +24,7 @@ public class EmailService {
 	@Value("#{credentials.mailUserName}")
 	private String username;
 	@Autowired
-	private JavaMailSender mailSender;
+	private JavaMailSender javaMailSender;
 	@Autowired
 	private TemplateRepository templateRepository;
 
@@ -43,13 +43,13 @@ public class EmailService {
 		LOGGER.debug("Sending email -> To: " + sender + " Subject: " + subject
 				+ " Message: " + htmlMessage);
 		try {
-			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessage message = javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 			helper.setSubject(getSubject(subject, replyMode));
 			helper.setTo(sender);
 			helper.setFrom(new InternetAddress(username + "@sapient.com"));
 			helper.setText(htmlMessage, true);
-			mailSender.send(message);
+			javaMailSender.send(message);
 		} catch (MessagingException messagingException) {
 			LOGGER.error(
 					"Error sending email : " + messagingException.getMessage());
