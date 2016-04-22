@@ -26,13 +26,14 @@ logging:
     org.ht.iops.framework.mail.reader.instruction: INFO
     org.ht.iops.events: DEBUG
     org.ht.iops.integration: DEBUG
+    org.ht.iops.service: DEBUG
     org.ht.iops.configurations: DEBUG
 #Custom properties
 custom:
   akamai:
     enabled: true
   integration:
-    url: http://localhost:8081/
+    url: http://localhost:8081
   adapter:
     jira:
       properties:

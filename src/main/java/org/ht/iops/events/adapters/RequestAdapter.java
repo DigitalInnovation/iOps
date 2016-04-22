@@ -10,4 +10,5 @@ public interface RequestAdapter<Req, Res> {
 	Class<Res> getResponseClass();
 	EmailEvent<IOpsEmailEvent> createEmailEvent(AppEvent<IOpsEvent> createEvent,
 			Res response);
+	String getAPIType();
 }

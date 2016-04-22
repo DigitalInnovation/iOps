@@ -23,14 +23,16 @@ public class IntegrationService {
 
 	public <Res extends RestResponse, Req extends RestRequest> Res processRequest(
 			final String type, final String listnerName,
-			final RestRequest request, final Class<Res> responseType)
+			final RestRequest request, final Class<Res> responseType,
+			final String apiType)
 			throws ApplicationValidationException, ApplicationRuntimeException {
 		Res response = null;
 		LOGGER.debug("Processing request " + type + ", " + listnerName + ", "
 				+ request);
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			response = restTemplate.postForObject(getURL(type, listnerName),
+			LOGGER.debug("URL: " + getURL(apiType, listnerName));
+			response = restTemplate.postForObject(getURL(apiType, listnerName),
 					request, responseType);
 		} catch (HttpStatusCodeException errorResponse) {
 			handleException(errorResponse, type);

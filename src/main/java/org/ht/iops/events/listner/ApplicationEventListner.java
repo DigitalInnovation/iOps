@@ -34,7 +34,8 @@ public class ApplicationEventListner {
 					.transformRequest(createEvent.getSource(), listnerName);
 			RestResponse response = integrationService.processRequest(
 					createEvent.getSource().getType(), listnerName, request,
-					requestAdapter.getResponseClass());
+					requestAdapter.getResponseClass(),
+					requestAdapter.getAPIType());
 			if (emailRequired) {
 				LOGGER.debug("Creating email event");
 				emailEvent = requestAdapter.createEmailEvent(createEvent,

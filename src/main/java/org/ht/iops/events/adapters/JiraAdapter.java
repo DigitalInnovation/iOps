@@ -54,4 +54,9 @@ public class JiraAdapter
 		return new EmailEvent<IOpsEmailEvent>(
 				new IOpsEmailEvent(createEvent.getSource(), tokens));
 	}
+
+	@Override
+	public String getAPIType() {
+		return "jira";
+	}
 }
