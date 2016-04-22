@@ -1,12 +1,12 @@
 package org.ht.iops.service;
 
-import java.text.MessageFormat;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.ht.iops.db.repository.TemplateRepository;
+import org.apache.velocity.app.VelocityEngine;
 import org.ht.iops.events.IOpsEmailEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 @Service
 public class EmailService {
@@ -26,15 +27,19 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	@Autowired
-	private TemplateRepository templateRepository;
+	private VelocityEngine velocityEngine;
 
 	public void sendResponseEmail(IOpsEmailEvent emailEvent) {
-		String message = templateRepository.findByNameAndType(
-				emailEvent.getType(), emailEvent.getEventType()).getMessage();
 		sendEmail(emailEvent.getSender(), emailEvent.getSubject(),
-				MessageFormat.format(message, emailEvent.getTokens().get(0),
-						emailEvent.getTokens().get(1)),
+				getHTMLTextFromTemplate(emailEvent.getType(),
+						emailEvent.getEventType(), emailEvent.getTokens()),
 				true);
+	}
+
+	public String getHTMLTextFromTemplate(final String type,
+			final String templateName, final Map<String, Object> model) {
+		return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+				type + "/" + templateName + ".vm", "UTF-8", model);
 	}
 
 	public void sendEmail(final String sender, final String subject,

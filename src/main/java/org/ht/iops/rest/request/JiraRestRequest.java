@@ -11,6 +11,7 @@ public class JiraRestRequest extends RestRequest {
 	private String owner;
 	private String originalEstimate;
 	private String remainingEstimate;
+	private String issueType;
 
 	/**
 	 * @return the summary
@@ -129,5 +130,20 @@ public class JiraRestRequest extends RestRequest {
 				+ labels + ", owner=" + owner + ", originalEstimate="
 				+ originalEstimate + ", remainingEstimate=" + remainingEstimate
 				+ "]";
+	}
+
+	/**
+	 * @return the issueType
+	 */
+	public String getIssueType() {
+		return issueType;
+	}
+
+	/**
+	 * @param issueType
+	 *            the issueType to set
+	 */
+	public void setIssueType(String issueType) {
+		this.issueType = issueType;
 	}
 }

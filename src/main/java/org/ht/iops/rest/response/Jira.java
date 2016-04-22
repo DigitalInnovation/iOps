@@ -6,25 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JiraResponse extends RestResponse {
-	private String id;
+public class Jira {
 	private String key;
-	private String self;
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+	private String url;
 
 	/**
 	 * @return the key
@@ -42,18 +26,18 @@ public class JiraResponse extends RestResponse {
 	}
 
 	/**
-	 * @return the self
+	 * @return the url
 	 */
-	public String getSelf() {
-		return self;
+	public String getUrl() {
+		return url;
 	}
 
 	/**
-	 * @param self
-	 *            the self to set
+	 * @param url
+	 *            the url to set
 	 */
-	public void setSelf(String self) {
-		this.self = self;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	/*
@@ -63,7 +47,6 @@ public class JiraResponse extends RestResponse {
 	 */
 	@Override
 	public String toString() {
-		return "JiraResponse [id=" + id + ", key=" + key + ", self=" + self
-				+ "]";
+		return "Jira [key=" + key + ", url=" + url + "]";
 	}
 }

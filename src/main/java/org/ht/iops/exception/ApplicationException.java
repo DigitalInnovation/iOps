@@ -30,7 +30,7 @@ public class ApplicationException extends Exception {
 
 	public ApplicationException(
 			ApplicationRuntimeException applicationRuntimeException) {
-		this(applicationRuntimeException.getCustomMessage(),
+		this(applicationRuntimeException.getMessage(),
 				applicationRuntimeException.getType(),
 				applicationRuntimeException.getCause());
 	}

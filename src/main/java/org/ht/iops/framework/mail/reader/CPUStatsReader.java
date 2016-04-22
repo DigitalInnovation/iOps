@@ -134,9 +134,8 @@ public class CPUStatsReader extends BaseMailReader {
 					.forEach(p -> parseRecordForData(p, record.get(p),
 							timeStamp, hall, processingTime, cpuRecords));
 		} catch (ParseException exception) {
-			throw new ApplicationRuntimeException(
-					"Exception occured while parsing Date", getReportName(),
-					exception);
+			throw new ApplicationRuntimeException(getReportName(), exception,
+					"Exception occured while parsing Date");
 		}
 	}
 

@@ -31,15 +31,14 @@ public class ApplicationEventListner {
 			LOGGER.debug(listnerName + " Processing event : "
 					+ createEvent.getSource());
 			RestRequest request = requestAdapter
-					.transformRequest(createEvent.getSource());
-			RestResponse response = requestAdapter
-					.transformResponse(integrationService.processRequest(
-							createEvent.getSource().getType(), listnerName,
-							request, requestAdapter.getResponseClass()));
+					.transformRequest(createEvent.getSource(), listnerName);
+			RestResponse response = integrationService.processRequest(
+					createEvent.getSource().getType(), listnerName, request,
+					requestAdapter.getResponseClass());
 			if (emailRequired) {
 				LOGGER.debug("Creating email event");
-				emailEvent = new EmailEvent<>(new IOpsEmailEvent(
-						createEvent.getSource(), response.tokens));
+				emailEvent = requestAdapter.createEmailEvent(createEvent,
+						response);
 			}
 		}
 		return emailEvent;

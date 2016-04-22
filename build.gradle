@@ -39,6 +39,7 @@ dependencies {
 	compile('org.apache.commons:commons-csv:1.2')
 	compile('org.jsoup:jsoup:1.8.3')
 	compile('com.google.code.gson:gson:2.6.2')
+	compile('org.apache.velocity:velocity:1.7')
 	testCompile('org.springframework.boot:spring-boot-starter-test') 
 }
 

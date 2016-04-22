@@ -34,7 +34,8 @@ public class EventListnerProcessor {
 	@PostConstruct
 	public void registerListners() {
 		List<EventConfig> configs = eventConfigRepository.findAll();
-		configs.stream().forEach(config -> registerListner(config));
+		configs.stream().filter(config -> config.isEnabled())
+				.forEach(config -> registerListner(config));
 
 	}
 

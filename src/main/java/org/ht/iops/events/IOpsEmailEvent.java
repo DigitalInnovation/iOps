@@ -1,7 +1,7 @@
 package org.ht.iops.events;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.exception.ApplicationValidationException;
@@ -11,12 +11,12 @@ public class IOpsEmailEvent {
 	private String type;
 	private String subject;
 	private String sender;
-	private List<String> tokens;
 	private EventType eventType;
+	private Map<String, Object> tokens;
 
 	public static enum EventType {
-		SUCCESS("success"), VALIDATIONERROR("validationerror"), GENERICERROR(
-				"genericerror");
+		SUCCESS("success"), VALIDATIONERROR("valerror"), GENERICERROR(
+				"generror");
 
 		private EventType(final String _type) {
 			this._type = _type;
@@ -26,7 +26,7 @@ public class IOpsEmailEvent {
 	}
 
 	public IOpsEmailEvent(final String type, final String subject,
-			final String sender, final List<String> tokens,
+			final String sender, final Map<String, Object> tokens,
 			final EventType eventType) {
 		this.type = type;
 		this.subject = subject;
@@ -36,22 +36,23 @@ public class IOpsEmailEvent {
 	}
 
 	public IOpsEmailEvent(final String type, final String subject,
-			final String sender, final List<String> tokens) {
+			final String sender, final Map<String, Object> tokens) {
 		this(type, subject, sender, tokens, EventType.SUCCESS);
 	}
 
 	public IOpsEmailEvent(final String type, final MailData mailData,
-			final List<String> tokens, final EventType eventType) {
+			final Map<String, Object> tokens, final EventType eventType) {
 		this(type, mailData.getSubject(), mailData.getMessageFrom(), tokens,
 				eventType);
 	}
 
 	public IOpsEmailEvent(final String type, final MailData mailData,
-			final List<String> tokens) {
+			final Map<String, Object> tokens) {
 		this(type, mailData.getSubject(), mailData.getMessageFrom(), tokens);
 	}
 
-	public IOpsEmailEvent(final IOpsEvent event, final List<String> tokens) {
+	public IOpsEmailEvent(final IOpsEvent event,
+			final Map<String, Object> tokens) {
 		this(event.getType(), event.getMailData(), tokens);
 	}
 
@@ -60,18 +61,16 @@ public class IOpsEmailEvent {
 			final MailData mailData) {
 		this(validationException.getType(), mailData, null,
 				EventType.VALIDATIONERROR);
-		this.tokens = new ArrayList<>();
-		tokens.add(validationException.getMessage());
-		tokens.add("");
+		this.tokens = new HashMap<>();
+		tokens.put("errors", validationException.getErrors());
 	}
 
 	public IOpsEmailEvent(final ApplicationRuntimeException runtimeException,
 			final MailData mailData) {
 		this(runtimeException.getType(), mailData, null,
 				EventType.GENERICERROR);
-		this.tokens = new ArrayList<>();
-		tokens.add(runtimeException.getMessage());
-		tokens.add("");
+		this.tokens = new HashMap<>();
+		tokens.put("errors", runtimeException.getErrors());
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class IOpsEmailEvent {
 	/**
 	 * @return the tokens
 	 */
-	public List<String> getTokens() {
+	public Map<String, Object> getTokens() {
 		return tokens;
 	}
 

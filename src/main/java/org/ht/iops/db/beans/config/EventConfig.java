@@ -12,6 +12,7 @@ public class EventConfig {
 	private List<String> events;
 	private String adapter;
 	private boolean emailRequired;
+	private boolean enabled;
 
 	/**
 	 * @return the id
@@ -97,5 +98,20 @@ public class EventConfig {
 	 */
 	public void setEmailRequired(boolean emailRequired) {
 		this.emailRequired = emailRequired;
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param enabled
+	 *            the enabled to set
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }
