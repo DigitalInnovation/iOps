@@ -12,11 +12,16 @@ buildscript {
 	}
 }
 
+plugins {
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot' 
 apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls:2.6.3'
+
 
 jar {
 	baseName = 'iOps'
