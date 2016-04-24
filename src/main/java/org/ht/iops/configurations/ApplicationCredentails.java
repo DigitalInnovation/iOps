@@ -22,8 +22,6 @@ public class ApplicationCredentails {
 	List<Credentials> credentials = null;
 	private String mailCredentials = "";
 	private String mailHost = "";
-	private String akamaiCredentials = "";
-	private String akamaiHost = "";
 	private String mailUserName = "";
 	private String mailPassword = "";
 	private String folder = "";
@@ -33,10 +31,7 @@ public class ApplicationCredentails {
 		credentials = credentialRepository.findAll();
 		credentials.stream().filter(p -> "Mail".equals(p.getType()))
 				.forEach((p -> setMailCredentials(p)));
-		credentials.stream().filter(p -> "Akamai".equals(p.getType()))
-				.forEach((p -> setAkamaiCredentials(p)));
-		LOGGER.debug("mail: " + this.mailUserName + "; Akamai: "
-				+ this.akamaiCredentials);
+		LOGGER.debug("mail: " + this.mailUserName);
 	}
 
 	/**
@@ -49,11 +44,6 @@ public class ApplicationCredentails {
 	private void setMailCredentials(Credentials credentials) {
 		this.mailCredentials = getCredentials(credentials, true);
 		this.mailHost = credentials.getHostURL();
-	}
-
-	private void setAkamaiCredentials(Credentials credentials) {
-		this.akamaiCredentials = getCredentials(credentials, false);
-		this.akamaiHost = credentials.getHostURL();
 	}
 
 	private String getCredentials(Credentials credentials,
@@ -69,24 +59,10 @@ public class ApplicationCredentails {
 	}
 
 	/**
-	 * @return the akamaiCredentials
-	 */
-	public String getAkamaiCredentials() {
-		return akamaiCredentials;
-	}
-
-	/**
 	 * @return the mailHost
 	 */
 	public String getMailHost() {
 		return mailHost;
-	}
-
-	/**
-	 * @return the akamaiHost
-	 */
-	public String getAkamaiHost() {
-		return akamaiHost;
 	}
 
 	/**

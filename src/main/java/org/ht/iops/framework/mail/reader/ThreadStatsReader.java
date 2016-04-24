@@ -7,7 +7,10 @@ import java.util.Map;
 
 import org.ht.iops.db.beans.reader.CPUStats;
 import org.ht.iops.db.beans.reader.ThreadStats;
+import org.ht.iops.db.repository.StatusRepository;
+import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.db.repository.reader.ThreadStatsRepository;
+import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.framework.mail.MailConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,14 @@ import org.springframework.stereotype.Component;
 public class ThreadStatsReader extends CPUStatsReader {
 	@Autowired
 	private ThreadStatsRepository threadStatsRepository;
+
+	public ThreadStatsReader(final MimeMessageReader mimeMessageReader,
+			final StatusRepository statusRepository,
+			final AppConfigRepository appConfigRepository,
+			final EventPublisher eventPublisher) {
+		super(mimeMessageReader, statusRepository, appConfigRepository,
+				eventPublisher);
+	}
 
 	@Override
 	protected String[] setHeadersAndFormat(final boolean hall5) {

@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Abstract mail reader to provide basic functionalities like
@@ -40,6 +41,16 @@ public abstract class BaseMailReader {
 	protected AppConfigRepository appConfigRepository;
 	@Autowired
 	protected EventPublisher eventPublisher;
+
+	public BaseMailReader(final MimeMessageReader mimeMessageReader,
+			final StatusRepository statusRepository,
+			final AppConfigRepository appConfigRepository,
+			final EventPublisher eventPublisher) {
+		this.mimeMessageReader = mimeMessageReader;
+		this.statusRepository = statusRepository;
+		this.appConfigRepository = appConfigRepository;
+		this.eventPublisher = eventPublisher;
+	}
 
 	protected void preProcess(final MimeMessage message) {
 
@@ -80,6 +91,7 @@ public abstract class BaseMailReader {
 
 	protected IOpsEvent createEvent(final String type,
 			final MailData mailData) {
+		Assert.notNull(mailData, "Mail Data cannot be null.");
 		return new IOpsEvent(type, mailData);
 	}
 }

@@ -163,7 +163,7 @@ public class EmailServiceTest {
 				.equals("RE: Test_Subject");
 	}
 
-	private List<Jira> setupJiraIssues() {
+	public static List<Jira> setupJiraIssues() {
 		Jira jira = new Jira();
 		jira.setKey("TEST-101");
 		jira.setUrl("http://localhost/TEST-101");
@@ -172,7 +172,7 @@ public class EmailServiceTest {
 		return issues;
 	}
 
-	private MailData setupMailData() {
+	public static MailData setupMailData() {
 		MailData mailData = new MailData();
 		mailData.setSubject("Test_Subject");
 		mailData.setMessageFrom("test@iops.com");

@@ -8,13 +8,17 @@ import java.util.Map;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
+import org.ht.iops.db.repository.StatusRepository;
+import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.IOpsEmailEvent;
 import org.ht.iops.events.IOpsEvent;
+import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
+import org.ht.iops.framework.mail.reader.MimeMessageReader;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -26,6 +30,14 @@ import org.springframework.util.StringUtils;
 public abstract class OpsInstructions extends BaseMailReader {
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(OpsInstructions.class);
+
+	public OpsInstructions(final MimeMessageReader mimeMessageReader,
+			final StatusRepository statusRepository,
+			final AppConfigRepository appConfigRepository,
+			final EventPublisher eventPublisher) {
+		super(mimeMessageReader, statusRepository, appConfigRepository,
+				eventPublisher);
+	}
 
 	@Override
 	protected Status postProcess(final MimeMessage message,
@@ -137,6 +149,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 
 	protected IOpsEvent createEvent(final Map<String, String> bodyTokens,
 			final List<String> subjectTokens, final MailData mailData) {
+		validateBodyTokens(bodyTokens);
 		Map<String, String> attributes = new HashMap<>();
 		attributes.putAll(bodyTokens);
 		addSubjectTokens(attributes, subjectTokens);
