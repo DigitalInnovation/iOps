@@ -21,7 +21,7 @@
 
 	<int-mail:imap-idle-channel-adapter
 		id="imapIdleAdaptar"
-		store-uri="${spring.mail.protocol}://#{credentials.mailCredentials}@#{credentials.mailHost}/${spring.mail.properties.folder}"
+		store-uri="${spring.mail.protocol}://#{credentials.mailCredentials}@#{credentials.mailHost}/#{credentials.folder}"
 		channel="recieveEmailChannel" auto-startup="true"
 		should-delete-messages="true" java-mail-properties="javaMailProperties" />
 	<int:channel id="recieveEmailChannel">

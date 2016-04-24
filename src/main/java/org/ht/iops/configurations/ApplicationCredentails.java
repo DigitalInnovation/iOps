@@ -26,6 +26,7 @@ public class ApplicationCredentails {
 	private String akamaiHost = "";
 	private String mailUserName = "";
 	private String mailPassword = "";
+	private String folder = "";
 
 	@PostConstruct
 	public void initialize() {
@@ -34,7 +35,7 @@ public class ApplicationCredentails {
 				.forEach((p -> setMailCredentials(p)));
 		credentials.stream().filter(p -> "Akamai".equals(p.getType()))
 				.forEach((p -> setAkamaiCredentials(p)));
-		LOGGER.debug("mail: " + this.mailCredentials + "; Akamai: "
+		LOGGER.debug("mail: " + this.mailUserName + "; Akamai: "
 				+ this.akamaiCredentials);
 	}
 
@@ -62,6 +63,7 @@ public class ApplicationCredentails {
 			this.mailUserName = credentials.getUsername();
 			this.mailPassword = password;
 			password = password.replaceAll("@", "%40");
+			this.folder = credentials.getAdditional().get("folder");
 		}
 		return credentials.getUsername() + ":" + password;
 	}
@@ -99,5 +101,12 @@ public class ApplicationCredentails {
 	 */
 	public String getMailPassword() {
 		return mailPassword;
+	}
+
+	/**
+	 * @return the folder
+	 */
+	public String getFolder() {
+		return folder;
 	}
 }

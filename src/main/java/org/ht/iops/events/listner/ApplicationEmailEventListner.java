@@ -20,6 +20,6 @@ public class ApplicationEmailEventListner {
 	@EventListener
 	public void handleCreateEvent(EmailEvent<IOpsEmailEvent> emailEvent) {
 		LOGGER.debug("Email event recieved " + emailEvent.getSource());
-		emailService.sendResponseEmail(emailEvent.getSource());
+		emailService.sendEmailForEvent(emailEvent.getSource());
 	}
 }

@@ -3,7 +3,6 @@ server:
   port: 8080
   compression:
     enabled: true
-    
 spring:
   #Mail properties
   mail:
@@ -13,11 +12,12 @@ spring:
       fallback: false
       protocol: imaps
       debug: false
-      folder: iOps
   #MongoDB propeties
   data:
     mongodb:
       uri: mongodb://localhost/iops
+  thymeleaf:
+    cache: false
 #Logging properties      
 logging:
   level:
@@ -47,11 +47,6 @@ custom:
     fallback: true
 #End
 ---
-#Cloud configs
-spring:
-  profiles: cloud
-#End
----
 #Test configs
 spring:
   profiles: test
@@ -59,11 +54,17 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost/test
+custom:
+  mail:
+    port: 3025
+    socketFactory: com.icegreen.greenmail.util.DummySSLSocketFactory
 #End
 ---
-#Test configs
+#Heroku configs
 spring:
   profiles: heroku
+  thymeleaf:
+    cache: true
 #Custom propeties
 custom:
   integration:

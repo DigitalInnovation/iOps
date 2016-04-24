@@ -57,4 +57,15 @@ public class RestResponse {
 	public void setError(String error) {
 		this.error = error;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "RestResponse [status=" + status + ", message=" + message
+				+ ", error=" + error + "]";
+	}
 }
