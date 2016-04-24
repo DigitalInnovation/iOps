@@ -3,7 +3,9 @@ package org.ht.iops.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -14,6 +16,7 @@ import org.ht.iops.events.IOpsEmailEvent;
 import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
+import org.ht.iops.rest.response.Jira;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -126,12 +129,12 @@ public class EmailServiceTest {
 
 	@Test
 	public void sendMailValidateEmailREMode() throws MessagingException {
-		emailService.sendEmail("test@iops.com", "Test Subject",
+		emailService.sendEmail("test@iops.com", "Test_Subject",
 				"Sending a test email message", true);
 		MimeMessage[] messages = greenMail.getReceivedMessages();
 		assertThat(messages).isNotEmpty().hasSize(1);
 		assertThat(messages[0]).extracting("subject").toString()
-				.equals("RE: Test Subject");
+				.equals("RE: Test_Subject");
 	}
 
 	@Test
@@ -149,9 +152,30 @@ public class EmailServiceTest {
 	@Test
 	public void sendEmailForEvent() throws MessagingException {
 		Map<String, Object> tokens = new HashMap<>();
-		tokens.put("test", "test");
-		IOpsEmailEvent emailEvent = new IOpsEmailEvent("unknown",
-				new MailData(), tokens);
+		tokens.put("summary", "Test_Summary");
+		tokens.put("issues", setupJiraIssues());
+		IOpsEmailEvent emailEvent = new IOpsEmailEvent("jira", setupMailData(),
+				tokens);
 		emailService.sendEmailForEvent(emailEvent);
+		MimeMessage[] messages = greenMail.getReceivedMessages();
+		assertThat(messages).isNotEmpty().hasSize(1);
+		assertThat(messages[0]).extracting("subject").toString()
+				.equals("RE: Test_Subject");
+	}
+
+	private List<Jira> setupJiraIssues() {
+		Jira jira = new Jira();
+		jira.setKey("TEST-101");
+		jira.setUrl("http://localhost/TEST-101");
+		List<Jira> issues = new ArrayList<>();
+		issues.add(jira);
+		return issues;
+	}
+
+	private MailData setupMailData() {
+		MailData mailData = new MailData();
+		mailData.setSubject("Test_Subject");
+		mailData.setMessageFrom("test@iops.com");
+		return mailData;
 	}
 }
