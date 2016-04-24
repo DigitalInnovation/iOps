@@ -3,6 +3,9 @@ jdk: oraclejdk8
 services: mongodb
 before_install:
 - chmod +x gradlew
+- sleep 15
+- mongo test --eval 'db.credentials.remove({})'
+- mongo test --eval 'db.credentials.insert([{"type":"Mail","username":"test","password":"test","hostURL":"127.0.0.1","additional":{"folder":"INBOX",}}])'
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
