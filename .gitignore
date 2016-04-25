@@ -48,3 +48,7 @@ bin/
 # Spring Beans
 rebel.xml
 /.project
+
+#Coverity
+cov/
+cov-int/
