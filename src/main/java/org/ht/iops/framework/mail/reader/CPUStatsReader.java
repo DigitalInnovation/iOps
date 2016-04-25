@@ -161,8 +161,8 @@ public class CPUStatsReader extends BaseMailReader {
 			final String value, final Date timeStamp, final String hall,
 			final Date processingTime, final Map<String, CPUStats> cpuRecords) {
 		CPUStats cpuStats = null;
-		String host = headerString.replaceAll(".att.mnscorp.net", "")
-				.replaceAll("s220823vaps", "").replaceAll("s221533vaps", "");
+		String host = headerString.replace(".att.mnscorp.net", "")
+				.replace("s220823vaps", "").replace("s221533vaps", "");
 		if (cpuRecords.containsKey(host)) {
 			cpuStats = cpuRecords.get(host);
 		} else {
