@@ -1,5 +1,8 @@
 # Incredible Operations (iOps)
-[![Build Status](https://travis-ci.org/htomar/iOps.svg?branch=master)](https://travis-ci.org/htomar/iOps) [![Dependency Status](https://www.versioneye.com/user/projects/57139a1dfcd19a00415b1a80/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57139a1dfcd19a00415b1a80)
+[![Build Status](https://travis-ci.org/htomar/iOps.svg?branch=master)](https://travis-ci.org/htomar/iOps) [![Dependency Status](https://www.versioneye.com/user/projects/57139a40fcd19a0039f173ce/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57139a40fcd19a0039f173ce) [![Coverage Status](https://coveralls.io/repos/github/htomar/iOps/badge.svg?branch=master)](https://coveralls.io/github/htomar/iOps?branch=master) <a href="https://scan.coverity.com/projects/htomar-iops">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/8666/badge.svg"/>
+</a>
 
 Application for operations that will be used for automating most of the monitoring and reporting tasks. Few of the functionalities include:
 - Parsing emails for monitoring and reporting purpose:
@@ -12,9 +15,9 @@ Application for operations that will be used for automating most of the monitori
 ## Technology stack
 ```
 * Java 8
-* Spring Boot 1.3.3 Release
+* Spring Boot 1.4.0 M2
 * Mongo DB 3.2
-* Gradle
+* Gradle 2.13
 ```
 
 ## Credits

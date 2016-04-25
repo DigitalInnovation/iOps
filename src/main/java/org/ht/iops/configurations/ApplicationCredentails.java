@@ -22,20 +22,16 @@ public class ApplicationCredentails {
 	List<Credentials> credentials = null;
 	private String mailCredentials = "";
 	private String mailHost = "";
-	private String akamaiCredentials = "";
-	private String akamaiHost = "";
 	private String mailUserName = "";
 	private String mailPassword = "";
+	private String folder = "";
 
 	@PostConstruct
 	public void initialize() {
 		credentials = credentialRepository.findAll();
 		credentials.stream().filter(p -> "Mail".equals(p.getType()))
 				.forEach((p -> setMailCredentials(p)));
-		credentials.stream().filter(p -> "Akamai".equals(p.getType()))
-				.forEach((p -> setAkamaiCredentials(p)));
-		LOGGER.debug("mail: " + this.mailCredentials + "; Akamai: "
-				+ this.akamaiCredentials);
+		LOGGER.debug("mail: " + this.mailUserName);
 	}
 
 	/**
@@ -50,11 +46,6 @@ public class ApplicationCredentails {
 		this.mailHost = credentials.getHostURL();
 	}
 
-	private void setAkamaiCredentials(Credentials credentials) {
-		this.akamaiCredentials = getCredentials(credentials, false);
-		this.akamaiHost = credentials.getHostURL();
-	}
-
 	private String getCredentials(Credentials credentials,
 			boolean mailCredentials) {
 		String password = credentials.getPassword();
@@ -62,15 +53,9 @@ public class ApplicationCredentails {
 			this.mailUserName = credentials.getUsername();
 			this.mailPassword = password;
 			password = password.replaceAll("@", "%40");
+			this.folder = credentials.getAdditional().get("folder");
 		}
 		return credentials.getUsername() + ":" + password;
-	}
-
-	/**
-	 * @return the akamaiCredentials
-	 */
-	public String getAkamaiCredentials() {
-		return akamaiCredentials;
 	}
 
 	/**
@@ -78,13 +63,6 @@ public class ApplicationCredentails {
 	 */
 	public String getMailHost() {
 		return mailHost;
-	}
-
-	/**
-	 * @return the akamaiHost
-	 */
-	public String getAkamaiHost() {
-		return akamaiHost;
 	}
 
 	/**
@@ -99,5 +77,12 @@ public class ApplicationCredentails {
 	 */
 	public String getMailPassword() {
 		return mailPassword;
+	}
+
+	/**
+	 * @return the folder
+	 */
+	public String getFolder() {
+		return folder;
 	}
 }

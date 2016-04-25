@@ -12,6 +12,9 @@ import java.util.Locale;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
+import org.ht.iops.db.repository.StatusRepository;
+import org.ht.iops.db.repository.config.AppConfigRepository;
+import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.framework.mail.MailData;
 import org.slf4j.Logger;
@@ -21,6 +24,14 @@ public class SyncCallReader extends BaseMailReader {
 	final private static String SUBJECT_PREFIX = "Ecom Splunk Alert | Major | Hourly | ";
 	final private static Logger LOGGER = LoggerFactory
 			.getLogger(SyncCallReader.class);
+
+	public SyncCallReader(final MimeMessageReader mimeMessageReader,
+			final StatusRepository statusRepository,
+			final AppConfigRepository appConfigRepository,
+			final EventPublisher eventPublisher) {
+		super(mimeMessageReader, statusRepository, appConfigRepository,
+				eventPublisher);
+	}
 
 	@Override
 	protected Status postProcess(final MimeMessage message,

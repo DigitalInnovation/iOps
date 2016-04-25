@@ -26,7 +26,10 @@ import org.ht.iops.db.beans.Rules;
 import org.ht.iops.db.beans.Status;
 import org.ht.iops.db.beans.reader.CPUStats;
 import org.ht.iops.db.repository.RulesRepository;
+import org.ht.iops.db.repository.StatusRepository;
+import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.db.repository.reader.CPUStatsRepository;
+import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.framework.mail.MailConstants;
@@ -42,6 +45,14 @@ public class CPUStatsReader extends BaseMailReader {
 	private final Logger LOGGER = LoggerFactory.getLogger(CPUStatsReader.class);
 	protected final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ENGLISH);
+
+	public CPUStatsReader(final MimeMessageReader mimeMessageReader,
+			final StatusRepository statusRepository,
+			final AppConfigRepository appConfigRepository,
+			final EventPublisher eventPublisher) {
+		super(mimeMessageReader, statusRepository, appConfigRepository,
+				eventPublisher);
+	}
 
 	@Autowired
 	private RulesRepository rulesRepository;
@@ -150,8 +161,8 @@ public class CPUStatsReader extends BaseMailReader {
 			final String value, final Date timeStamp, final String hall,
 			final Date processingTime, final Map<String, CPUStats> cpuRecords) {
 		CPUStats cpuStats = null;
-		String host = headerString.replaceAll(".att.mnscorp.net", "")
-				.replaceAll("s220823vaps", "").replaceAll("s221533vaps", "");
+		String host = headerString.replace(".att.mnscorp.net", "")
+				.replace("s220823vaps", "").replace("s221533vaps", "");
 		if (cpuRecords.containsKey(host)) {
 			cpuStats = cpuRecords.get(host);
 		} else {
