@@ -122,14 +122,21 @@ public abstract class OpsInstructions extends BaseMailReader {
 			Elements elements) {
 		elements.first().childNodes().stream()
 				.filter(divElement -> divElement.toString().contains("<p"))
-				.forEach(
-						pElement -> pElement.childNodes()
-								.stream().filter(dataElement -> !dataElement
-										.toString().contains("<o:p>"))
-								.forEach(data -> {
-									plainContent.append(data.toString())
-											.append(System.lineSeparator());
-								}));
+				.forEach(pElement -> {
+					pElement.childNodes()
+							.stream().filter(dataElement -> !dataElement
+									.toString().contains("<o:p>"))
+							.forEach(data -> {
+								if (data.childNodes().isEmpty()) {
+									plainContent.append(data.toString());
+								} else {
+									data.childNodes().stream().forEach(
+											dataChild -> plainContent.append(
+													dataChild.toString()));
+								}
+							});
+					plainContent.append(System.lineSeparator());
+				});
 	}
 
 	protected abstract void validateBodyTokens(
