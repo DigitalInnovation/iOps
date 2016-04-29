@@ -22,6 +22,9 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot' 
 apply plugin: 'jacoco'
 
+jacoco {
+	toolVersion = "0.7.4+"
+}
 
 jar {
 	baseName = 'iOps'

@@ -1,5 +1,6 @@
 package org.ht.iops.events;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.ht.iops.framework.mail.MailData;
@@ -8,11 +9,13 @@ import org.springframework.util.Assert;
 public class IOpsEvent {
 	private String type;
 	private Map<String, String> attributes;
+	private String[] messageArguments;
 	private MailData mailData;
 
 	protected IOpsEvent(final String type) {
 		Assert.hasText(type, "Event type cannot be null");
 		this.type = type;
+		this.attributes = new HashMap<>();
 	}
 
 	public IOpsEvent(final String type, final MailData mailData) {
@@ -73,5 +76,32 @@ public class IOpsEvent {
 	 */
 	public void setMailData(MailData mailData) {
 		this.mailData = mailData;
+	}
+
+	/**
+	 * @return the messageArguments
+	 */
+	public String[] getMessageArguments() {
+		return messageArguments;
+	}
+
+	/**
+	 * @param messageArguments
+	 *            the messageArguments to set
+	 */
+	public void setMessageArguments(String[] messageArguments) {
+		this.messageArguments = messageArguments;
+	}
+
+	/**
+	 * Add attributes to the event.
+	 * 
+	 * @param attributeName
+	 *            - attribute name
+	 * @param attributeValue
+	 *            - attribute value
+	 */
+	public void addAttributes(String attributeName, String attributeValue) {
+		this.attributes.put(attributeName, attributeValue);
 	}
 }

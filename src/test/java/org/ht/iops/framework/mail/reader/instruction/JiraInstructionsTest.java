@@ -39,7 +39,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEventNullBodyTokens() {
+	public void createEvent_NullBodyTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
 		thrown.expectMessage("Jira description and owner is a required field.");
 		jiraInstructions.createEvent(new HashMap<String, String>(),
@@ -47,7 +47,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEventNullOwnerTokens() {
+	public void createEvent_NullOwnerTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
 		thrown.expectMessage("Jira description and owner is a required field.");
 		Map<String, String> bodyTokens = createBodyTokens();
@@ -57,7 +57,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEventNullSubjectTokens() {
+	public void createEvent_NullSubjectTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
 		thrown.expectMessage("Jira summary is a required field.");
 		jiraInstructions.createEvent(createBodyTokens(),
@@ -65,7 +65,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEventEmptySubjectTokens() {
+	public void createEvent_EmptySubjectTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
 		thrown.expectMessage("Jira summary is a required field.");
 		List<String> subjectTokens = createSubjectTokens();
@@ -75,7 +75,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEventNullMailData() {
+	public void createEvent_NullMailData_ShouldThrowIllegalArgumentException() {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Mail Data cannot be null.");
 		jiraInstructions.createEvent(createBodyTokens(), createSubjectTokens(),
@@ -83,7 +83,7 @@ public class JiraInstructionsTest {
 	}
 
 	@Test
-	public void createEvent() {
+	public void createEvent_Success() {
 		IOpsEvent opsEvent = jiraInstructions.createEvent(createBodyTokens(),
 				createSubjectTokens(), EmailServiceTest.setupMailData());
 		assertThat(opsEvent).isNotNull();

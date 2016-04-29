@@ -232,7 +232,6 @@ public class CPUStatsReader extends BaseMailReader {
 		return rules;
 	}
 
-	@Override
 	public Status getStatus(String... strings) {
 		Status status = new Status(getReportTitle(), strings[0]);
 		status.setLastUpdate(new Date());

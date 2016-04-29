@@ -24,6 +24,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 @Component
@@ -143,11 +144,6 @@ public abstract class OpsInstructions extends BaseMailReader {
 			final Map<String, String> bodyTokens);
 
 	@Override
-	public Status getStatus(final String... strings) {
-		return null;
-	}
-
-	@Override
 	protected boolean requireHTMLElements() {
 		return true;
 	}
@@ -156,6 +152,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 
 	protected IOpsEvent createEvent(final Map<String, String> bodyTokens,
 			final List<String> subjectTokens, final MailData mailData) {
+		Assert.notNull(mailData, "Mail Data cannot be null.");
 		validateBodyTokens(bodyTokens);
 		Map<String, String> attributes = new HashMap<>();
 		attributes.putAll(bodyTokens);
@@ -168,4 +165,9 @@ public abstract class OpsInstructions extends BaseMailReader {
 
 	protected abstract void addSubjectTokens(Map<String, String> instructions,
 			List<String> subjectTokens);
+
+	@Override
+	protected String getReportName() {
+		return null;
+	}
 }
