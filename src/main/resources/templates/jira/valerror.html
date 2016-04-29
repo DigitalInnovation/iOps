@@ -65,7 +65,7 @@
 		<p class="MsoNormal"><b><span style="font-size:14.0pt;color:red;text-decoration: underline">Error Creating Jira<o:p></o:p></span></b></p>
 		<p class="MsoNormal"><b><span style="color:#1F497D">Error Details</span>:</b><span style="color:#1F497D"><o:p></o:p></span></p>
 		<div th:each="error : ${errors}">
-			<p class="MsoNormal"><span style="color:#1F497D">${error}<o:p></o:p></span></p>
+			<p class="MsoNormal"><span style="color:#1F497D" th:text="${error}"><o:p></o:p></span></p>
 		</div>
 	</div>
 </body>

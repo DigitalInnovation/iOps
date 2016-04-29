@@ -94,7 +94,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 		LOGGER.debug("Plain body tokens: " + bodyTokens);
 	}
 
-	private void parseHTMLBody(final Document htmlDocument,
+	protected void parseHTMLBody(final Document htmlDocument,
 			final Map<String, String> bodyTokens) {
 		final StringBuffer plainContent = new StringBuffer("");
 		Elements elements = htmlDocument.getElementsByClass("WordSection1");
@@ -107,7 +107,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 		parsePlainBody(plainContent.toString(), bodyTokens);
 	}
 
-	private void parseOutlookRichText(StringBuffer plainContent,
+	protected void parseOutlookRichText(StringBuffer plainContent,
 			Document htmlDocument) {
 		Elements elements = htmlDocument.getElementsByTag("div");
 		elements.stream()
@@ -118,7 +118,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 				}));
 	}
 
-	private void parseOutlookHTML(final StringBuffer plainContent,
+	protected void parseOutlookHTML(final StringBuffer plainContent,
 			Elements elements) {
 		elements.first().childNodes().stream()
 				.filter(divElement -> divElement.toString().contains("<p"))
