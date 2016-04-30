@@ -14,7 +14,7 @@ cache:
   - "$HOME/.gradle/wrapper/"
 script: ./gradlew assemble
 script: ./gradlew check --stacktrace
- env:
+env:
   global:
    - secure: "muskZPzzA2y7VfgXv/rdVTN+qi4aKZhUI67zApD6a7SSRiNINqiVOuXj74EWvJn7jQ5KqnwPQvExTgo2UpjSwLFUStyxLmBE036EBR/uFocqvQEbFPNkrsT95nUxQGQ+Sd2dkZcr96+NIHUu8g3N2gh1y0xsu1Ij9hC3G74ZjzlxBL0nbjv9OslayUYxokBXLY5FfTXD9rfuwmFtfm2mm41M+m3JPtZ8a8eLEmTZZLhu3KbYlPxolSEmx98cXIIA3eQKlb5Pg649hDFOPGzk6x9i3DEdVDCM3+WtVt/W5qtGrArf51dV6tBrIW8CQfqlIQnxilb2J0pb5vhb3jwLPOADenGEsUPq/PPbplGD/roxnZmpvXdK9sv5sTbG2o17+wM9b+nen95RDJtnBsKPTWyHguhzurt/wJELRtjCOT3KrxSopytzLm99FQ7ztSz6N7EkaJjuG1SvvgpBA+y9Y0h46ZpDnKaiap82NLnNPB1dgZHeaz6SCH+ZrW/sYPOYQbjUXS8pIUlBSxgRZwbpHN7bcoGjupiYG/zAKKgMIzhQDPDe30UkJDcPVB5NkYDeiltgIJKItzU3SuyPkihVonFignQUnKR6JUuCvNPolYs5tU5X5QXuOfAT2bIAR/1Ac3d0wCBrliit6Z39H2Z9R/KHRYZa9yqyvFcqrItpAtg="
 deploy:
