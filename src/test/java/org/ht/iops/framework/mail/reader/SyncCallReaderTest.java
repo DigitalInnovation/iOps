@@ -110,7 +110,8 @@ public class SyncCallReaderTest {
 			throws ParseException {
 		Date date = new Date();
 		assertThat(syncCallReader.getReportTime(getSynCallDate(date),
-				getReportName())).isNotNull().isEqualTo(date.toString());
+				getReportName())).isNotNull()
+						.isEqualTo(SyncCallReader.DISPLAY_FORMAT.format(date));
 	}
 
 	@Test
@@ -136,7 +137,7 @@ public class SyncCallReaderTest {
 		details.add("");
 		details.add("Thu Apr 28 21:00:00 2016");
 		syncCallReader.convertTime(details, getReportName());
-		assertThat(details.get(1)).isEqualTo("Thu Apr 28 21:00:00 BST 2016");
+		assertThat(details.get(1)).isEqualTo("28 Apr 21:00");
 	}
 
 	@Test

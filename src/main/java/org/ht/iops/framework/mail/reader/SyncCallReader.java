@@ -40,6 +40,9 @@ public class SyncCallReader extends BaseMailReader {
 	final private static Logger LOGGER = LoggerFactory
 			.getLogger(SyncCallReader.class);
 
+	public final static SimpleDateFormat DISPLAY_FORMAT = new SimpleDateFormat(
+			"dd MMM HH:mm");
+
 	/**
 	 * Constructor for <tt>SyncCallReader</tt> derived from the super class
 	 * constructor {@link BaseMailReader}. Spring uses this constructor for
@@ -157,7 +160,7 @@ public class SyncCallReader extends BaseMailReader {
 		DateFormat dateFormat = new SimpleDateFormat(appConfigRepository
 				.findByNameAndType(getReportName(), "dateformat").getValue(),
 				Locale.ENGLISH);
-		return dateFormat.parse(reportTime).toString();
+		return DISPLAY_FORMAT.format(dateFormat.parse(reportTime));
 	}
 
 	/**
