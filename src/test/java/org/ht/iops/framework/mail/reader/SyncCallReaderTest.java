@@ -84,7 +84,7 @@ public class SyncCallReaderTest {
 		AppConfig dateFormat = createAppConfig(syncCallReader.getReportName(),
 				"dateformat", DATE_FORMAT);
 		when(appConfigRepository.findByNameAndType(
-				syncCallReader.getReportName(), "dateFormat"))
+				syncCallReader.getReportName(), "dateformat"))
 						.thenReturn(dateFormat);
 	}
 
