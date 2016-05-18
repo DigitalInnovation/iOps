@@ -1,4 +1,4 @@
-package org.ht.iops.framework.mail.reader;
+package org.ht.iops.framework.mail.reader.alert;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -37,12 +37,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class SyncCallReaderTest {
+public class SyncCallAlertTest {
 	private String DATE_FORMAT = "EEE MMM dd HH:mm:ss yyyy";
 	private static Document successHTML = null;
 	private static Document errorHTML = null;
 
-	private SyncCallReader syncCallReader;
+	private SyncCallAlert syncCallReader;
 	private SlackAdapter slackAdapter;
 
 	@Mock
@@ -71,9 +71,9 @@ public class SyncCallReaderTest {
 
 	@Before
 	public void setUp() {
-		syncCallReader = new SyncCallReader(new MimeMessageReader(), null,
-				appConfigRepository,
-				new EventPublisher(applicationEventPublisher));
+		syncCallReader = new SyncCallAlert(null,
+				new EventPublisher(applicationEventPublisher),
+				appConfigRepository);
 		slackAdapter = new SlackAdapter(slackConfigRepository);
 		setUpAppConfig();
 		when(mailData.getSubject()).thenReturn(
@@ -94,7 +94,7 @@ public class SyncCallReaderTest {
 		config.setListner("test");
 		config.setType("alert");
 		config.setText(
-				"*_`Major Alert`_* -> Sync call -> {0} -> Error percentage > 5%{5}Error percentage *{4}%* ({3} out of {2})");
+				"*_`Major Alert`_* -> Sync call -> {0} -> Error percentage *{4}%* ({3} out of {2})");
 		when(slackConfigRepository.findByNameAndListnerAndType(
 				syncCallReader.getReportName(), "test", "alert"))
 						.thenReturn(config);
@@ -109,26 +109,25 @@ public class SyncCallReaderTest {
 	public void getReportTime_ValidatFormat_ShouldParseWithoutException()
 			throws ParseException {
 		Date date = new Date();
-		assertThat(syncCallReader.getReportTime(getSynCallDate(date),
-				getReportName())).isNotNull()
-						.isEqualTo(SyncCallReader.DISPLAY_FORMAT.format(date));
+		assertThat(syncCallReader.getReportTime(getSynCallDate(date)))
+				.isNotNull()
+				.isEqualTo(SyncCallAlert.DISPLAY_FORMAT.format(date));
 	}
 
 	@Test
 	public void getReportTime_NullDate_ShouldThrowIllegalArgumentException()
 			throws ParseException {
 		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage(
-				"Null or empty date passed for: " + getReportName());
-		assertThat(syncCallReader.getReportTime(null, getReportName()));
+		thrown.expectMessage("Null or empty date passed for synccall");
+		assertThat(syncCallReader.getReportTime(null));
 	}
 
 	@Test
 	public void getReportTime_InvalidDate_ShouldThrowParseException()
 			throws ParseException {
 		thrown.expect(ParseException.class);
-		assertThat(syncCallReader.getReportTime("Apr Thu 28 21:00:00 2016 GMT",
-				getReportName()));
+		assertThat(
+				syncCallReader.getReportTime("Apr Thu 28 21:00:00 2016 GMT"));
 	}
 
 	@Test
@@ -136,7 +135,7 @@ public class SyncCallReaderTest {
 		List<String> details = new ArrayList<>();
 		details.add("");
 		details.add("Thu Apr 28 21:00:00 2016");
-		syncCallReader.convertTime(details, getReportName());
+		syncCallReader.applyTransformations(details);
 		assertThat(details.get(1)).isEqualTo("28 Apr 21:00");
 	}
 
@@ -153,9 +152,8 @@ public class SyncCallReaderTest {
 	public void getDetailsFromHTML_ValidDocument_ShouldReturnExpectedListOfString() {
 		List<String> expectedList = createExpectedList();
 		setHTMLDocument(successHTML);
-		assertThat(syncCallReader.getDetailsFromHTML(mailData, getReportName()))
-				.isNotEmpty().hasSameSizeAs(expectedList)
-				.hasSameElementsAs(expectedList);
+		assertThat(syncCallReader.getDetailsFromHTML(mailData)).isNotEmpty()
+				.hasSameSizeAs(expectedList).hasSameElementsAs(expectedList);
 	}
 
 	@Test
@@ -163,7 +161,7 @@ public class SyncCallReaderTest {
 		thrown.expect(ApplicationValidationException.class);
 		thrown.expectMessage("Invalid HTML document recieved in email.");
 		setHTMLDocument("<html><body></body></html>");
-		syncCallReader.getDetailsFromHTML(mailData, getReportName());
+		syncCallReader.getDetailsFromHTML(mailData);
 	}
 
 	@Test
@@ -183,12 +181,12 @@ public class SyncCallReaderTest {
 	public void createSyncCallEvent_NullList_ShouldThrowIllegalArgumentException() {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Arguments cannot be null.");
-		syncCallReader.createSyncCallEvent(null);
+		syncCallReader.createAlertEvent(null);
 	}
 
 	@Test
 	public void createSyncCallEvent_ValidDetails() {
-		assertThat(syncCallReader.createSyncCallEvent(createExpectedList()))
+		assertThat(syncCallReader.createAlertEvent(createExpectedList()))
 				.extracting("messageArguments").isNotNull();
 	}
 
@@ -196,13 +194,10 @@ public class SyncCallReaderTest {
 	public void transformRequest_SlackAdapter_ValidateFormattedString() {
 		setUpSlackConfig();
 		SlackRequest request = slackAdapter.transformRequest(
-				syncCallReader.createSyncCallEvent(createExpectedList()),
-				"test");
+				syncCallReader.createAlertEvent(createExpectedList()), "test");
 		assertThat(request).isNotNull();
 		assertThat(request.getText()).as("Text").isEqualTo(
-				"*_`Major Alert`_* -> Sync call -> Get Order List -> Error percentage > 5%"
-						+ System.lineSeparator()
-						+ "Error percentage *6.59%* (110 out of 1669)");
+				"*_`Major Alert`_* -> Sync call -> Get Order List -> Error percentage *6.59%* (110 out of 1669)");
 	}
 
 	private List<String> createExpectedList() {

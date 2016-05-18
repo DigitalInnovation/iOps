@@ -3,6 +3,7 @@ package org.ht.iops.framework.mail.reader;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.instruction.InvalidInstructions;
 import org.ht.iops.framework.mail.reader.instruction.JiraInstructions;
 import org.slf4j.Logger;
@@ -19,13 +20,13 @@ public class MailReaderFactory {
 	private ThreadStatsReader threadStatsReader;
 	private JiraInstructions jiraInstructions;
 	private InvalidInstructions invalidInstructions;
-	private SyncCallReader syncCallReader;
+	private SyncCallAlert syncCallReader;
 
 	public MailReaderFactory(final CPUStatsReader cpuStatsReader,
 			final ThreadStatsReader threadStatsReader,
 			final JiraInstructions jiraInstructions,
 			final InvalidInstructions invalidInstructions,
-			final SyncCallReader syncCallReader) {
+			final SyncCallAlert syncCallReader) {
 		this.cpuStatsReader = cpuStatsReader;
 		this.threadStatsReader = threadStatsReader;
 		this.jiraInstructions = jiraInstructions;

@@ -4,21 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.ht.iops.db.repository.StatusRepository;
-import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationValidationException;
-import org.ht.iops.framework.mail.reader.MimeMessageReader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 public class JiraInstructions extends OpsInstructions {
-	public JiraInstructions(final MimeMessageReader mimeMessageReader,
-			final StatusRepository statusRepository,
-			final AppConfigRepository appConfigRepository,
+	public JiraInstructions(final StatusRepository statusRepository,
 			final EventPublisher eventPublisher) {
-		super(mimeMessageReader, statusRepository, appConfigRepository,
-				eventPublisher);
+		super(statusRepository, eventPublisher);
 	}
 
 	@Override
@@ -39,7 +34,9 @@ public class JiraInstructions extends OpsInstructions {
 	protected void validateBodyTokens(Map<String, String> bodyTokens) {
 		String description = bodyTokens.get("description");
 		String owner = bodyTokens.get("owner");
-		if (StringUtils.isEmpty(description) || StringUtils.isEmpty(owner)) {
+		String workType = bodyTokens.get("worktype");
+		if (StringUtils.isEmpty(description) || StringUtils.isEmpty(owner)
+				|| StringUtils.isEmpty(workType)) {
 			throw new ApplicationValidationException(
 					"Jira description and owner is a required field.",
 					getInstructionName());

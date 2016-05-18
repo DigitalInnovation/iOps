@@ -1,9 +1,12 @@
 package org.ht.iops.rest.request;
 
+import java.util.List;
+
 public class SlackRequest extends RestRequest {
 	private String text;
 	private boolean notifyChannel;
 	private boolean notifyHere;
+	private List<Attachment> attachments;
 
 	/**
 	 * @return the text
@@ -50,14 +53,18 @@ public class SlackRequest extends RestRequest {
 		this.notifyHere = notifyHere;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "SlackRequest [text=" + text + ", notifyChannel=" + notifyChannel
-				+ ", notifyHere=" + notifyHere + "]";
+				+ ", notifyHere=" + notifyHere + ", attachments=" + attachments
+				+ "]";
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
 	}
 }

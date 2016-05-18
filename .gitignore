@@ -52,3 +52,4 @@ rebel.xml
 #Coverity
 cov/
 cov-int/
+/.apt_generated/

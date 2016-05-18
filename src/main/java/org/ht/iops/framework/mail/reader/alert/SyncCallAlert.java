@@ -1,23 +1,16 @@
-package org.ht.iops.framework.mail.reader;
+package org.ht.iops.framework.mail.reader.alert;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import javax.mail.internet.MimeMessage;
-
-import org.ht.iops.db.beans.Status;
 import org.ht.iops.db.repository.StatusRepository;
 import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ht.iops.framework.mail.reader.BaseMailReader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -33,59 +26,26 @@ import org.springframework.util.Assert;
  *
  */
 @Component
-public class SyncCallReader extends BaseMailReader {
+public class SyncCallAlert extends AlertReader<String> {
 	/** Subject prefix string for the Sync call alert. */
 	final private static String SUBJECT_PREFIX = "Ecom Splunk Alert | Major | Hourly | ";
-	/** Logger */
-	final private static Logger LOGGER = LoggerFactory
-			.getLogger(SyncCallReader.class);
-
-	public final static SimpleDateFormat DISPLAY_FORMAT = new SimpleDateFormat(
-			"dd MMM HH:mm");
 
 	/**
 	 * Constructor for <tt>SyncCallReader</tt> derived from the super class
 	 * constructor {@link BaseMailReader}. Spring uses this constructor for
 	 * injecting dependencies.
 	 * 
-	 * @param mimeMessageReader
-	 *            - mine message parser instance
 	 * @param statusRepository
-	 *            - Repository for DB table 'Status'
-	 * @param appConfigRepository
 	 *            - Repository for DB table 'Status'
 	 * @param eventPublisher
 	 *            - Event publisher
+	 * @param configRepository
+	 *            - Repository for DB table 'AppConfig'
 	 */
-	public SyncCallReader(final MimeMessageReader mimeMessageReader,
-			final StatusRepository statusRepository,
-			final AppConfigRepository appConfigRepository,
-			final EventPublisher eventPublisher) {
-		super(mimeMessageReader, statusRepository, appConfigRepository,
-				eventPublisher);
-	}
-
-	@Override
-	protected Status postProcess(final MimeMessage message,
-			final MailData mailData) {
-		Status status = null;
-		final String reportName = mailData.getSubject().replace(SUBJECT_PREFIX,
-				"");
-		if (null == mailData.getHtmlDocument()) {
-			throw new ApplicationValidationException(
-					"Invalid message body contents, no HTML document",
-					reportName);
-		}
-		LOGGER.debug("HTML message" + mailData.getHtmlContent());
-		try {
-			List<String> details = getDetailsFromHTML(mailData, reportName);
-			convertTime(details, reportName);
-			eventPublisher.createEvent(createSyncCallEvent(details));
-		} catch (ParseException exception) {
-			throw new ApplicationValidationException(exception.getMessage(),
-					reportName);
-		}
-		return status;
+	public SyncCallAlert(final StatusRepository statusRepository,
+			final EventPublisher eventPublisher,
+			final AppConfigRepository configRepository) {
+		super(statusRepository, eventPublisher, configRepository);
 	}
 
 	/**
@@ -100,15 +60,14 @@ public class SyncCallReader extends BaseMailReader {
 	 * 
 	 * @param mailData
 	 *            - mail data object containing email details
-	 * @param reportName
-	 *            - name of the Sync Call (like 'Get Order List')
 	 * @return list containing values extracted from HTML.
 	 */
-	protected List<String> getDetailsFromHTML(final MailData mailData,
-			final String reportName) {
+	@Override
+	protected List<String> getDetailsFromHTML(final MailData mailData) {
 		List<String> details = new ArrayList<>();
 		try {
-			details.add(reportName);
+			details.add(mailData.getSubject().replace(SUBJECT_PREFIX, "")
+					.replace(" - Sync Call", ""));
 			mailData.getHtmlDocument().getElementsByClass("results").first()
 					.childNodes().stream()
 					.forEach(tBody -> tBody.childNodes().stream()
@@ -125,42 +84,25 @@ public class SyncCallReader extends BaseMailReader {
 		} catch (NullPointerException
 				| IllegalArgumentException illegalArgumentException) {
 			throw new ApplicationValidationException(
-					"Invalid HTML document recieved in email.", reportName);
+					"Invalid HTML document recieved in email.",
+					getReportName());
 		}
 		return details;
 	}
 
 	/**
-	 * Converts alert specific time format into Java standard format. E.g. Alert
-	 * format - 'Thu Apr 28 21:00:00 2016'
+	 * Method for applying transformations on the input HTML. Converts alert
+	 * specific time format into Java standard format. E.g. Alert format - 'Thu
+	 * Apr 28 21:00:00 2016'
 	 * 
 	 * @param details
-	 * @param reportName
+	 *            - list containing all the details about the alert.
 	 * @throws ParseException
 	 */
-	protected void convertTime(final List<String> details,
-			final String reportName) throws ParseException {
-		details.set(1, getReportTime(details.get(1), reportName));
-	}
-
-	/**
-	 * Converts alert specific time format into Java standard format. E.g. Alert
-	 * format - 'Thu Apr 28 21:00:00 2016'. Reads the alert format from
-	 * 'AppConfig' using repositories.
-	 * 
-	 * @param reportTime
-	 * @param reportName
-	 * @return
-	 * @throws ParseException
-	 */
-	protected String getReportTime(final String reportTime,
-			final String reportName) throws ParseException {
-		Assert.hasText(reportTime,
-				"Null or empty date passed for: " + reportName);
-		DateFormat dateFormat = new SimpleDateFormat(appConfigRepository
-				.findByNameAndType(getReportName(), "dateformat").getValue(),
-				Locale.ENGLISH);
-		return DISPLAY_FORMAT.format(dateFormat.parse(reportTime));
+	@Override
+	protected void applyTransformations(final List<String> details)
+			throws ParseException {
+		details.set(1, getReportTime(details.get(1)));
 	}
 
 	/**
@@ -172,18 +114,13 @@ public class SyncCallReader extends BaseMailReader {
 	 *            - token from parse HTML message.
 	 * @return create event
 	 */
-	protected IOpsEvent createSyncCallEvent(final List<String> arguments) {
+	@Override
+	protected IOpsEvent createAlertEvent(final List<String> arguments) {
 		Assert.notEmpty(arguments, "Arguments cannot be null.");
 		IOpsEvent event = createEvent(getReportName());
-		arguments.add(System.lineSeparator());
 		event.setMessageArguments(arguments.toArray(new String[]{}));
 		event.addAttributes("type", "alert");
 		return event;
-	}
-
-	@Override
-	protected boolean requireHTMLElements() {
-		return true;
 	}
 
 	@Override

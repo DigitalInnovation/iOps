@@ -9,7 +9,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
 import org.ht.iops.db.repository.StatusRepository;
-import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.IOpsEmailEvent;
 import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.events.publisher.EventPublisher;
@@ -18,7 +17,6 @@ import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
-import org.ht.iops.framework.mail.reader.MimeMessageReader;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -32,12 +30,9 @@ public abstract class OpsInstructions extends BaseMailReader {
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(OpsInstructions.class);
 
-	public OpsInstructions(final MimeMessageReader mimeMessageReader,
-			final StatusRepository statusRepository,
-			final AppConfigRepository appConfigRepository,
+	public OpsInstructions(final StatusRepository statusRepository,
 			final EventPublisher eventPublisher) {
-		super(mimeMessageReader, statusRepository, appConfigRepository,
-				eventPublisher);
+		super(statusRepository, eventPublisher);
 	}
 
 	@Override

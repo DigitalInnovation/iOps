@@ -36,7 +36,16 @@ public class JiraAdapter
 		request.setIssueType(appConfigRepository
 				.findByNameAndType(additionalAttributes[0], "issuetype")
 				.getValue());
+		setCustomFields(request, iOpsEvent);
 		return request;
+	}
+
+	private void setCustomFields(final JiraRestRequest request,
+			final IOpsEvent iOpsEvent) {
+		Map<String, String> customFields = new HashMap<>();
+		customFields.put("customfield_12735",
+				iOpsEvent.getAttributes().get("worktype"));
+		request.setCustomFields(customFields);
 	}
 
 	@Override

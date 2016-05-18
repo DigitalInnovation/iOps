@@ -31,6 +31,7 @@ public class SlackAdapter
 		SlackRequest request = new SlackRequest();
 		request.setText(
 				formatText(config.getText(), iOpsEvent.getMessageArguments()));
+		request.setAttachments(iOpsEvent.getAttachments());
 		request.setNotifyChannel(config.isChannel());
 		request.setNotifyHere(config.isHere());
 		return request;

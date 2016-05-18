@@ -8,7 +8,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
  * @author htomar
  *
  */
-@Component
 public class MimeMessageReader {
 	/** Logger **/
 	private static final Logger logger = LoggerFactory
@@ -33,7 +31,7 @@ public class MimeMessageReader {
 	 * @throws Exception
 	 *             if an exception occurs while parsing mime message.
 	 */
-	public MailData parseMessage(final MimeMessage message,
+	public static MailData parseMessage(final MimeMessage message,
 			final boolean parseHTMLElements) throws Exception {
 		MailData mailData = new MailData();
 		MimeMessageParser messageParser = new MimeMessageParser(message);
@@ -74,7 +72,7 @@ public class MimeMessageReader {
 	 * @throws Exception
 	 *             if an exception occurs while parsing mime message.
 	 */
-	private void setBasicDetails(final MailData mailData,
+	private static void setBasicDetails(final MailData mailData,
 			final MimeMessageParser messageParser) throws Exception {
 		mailData.setMessageFrom(messageParser.getFrom());
 		mailData.setToAddresses(messageParser.getTo());
@@ -89,7 +87,7 @@ public class MimeMessageReader {
 	 * @param mailData
 	 *            - mail data object, used for reading HTML content.
 	 */
-	private void parseHTMLContent(final MailData mailData) {
+	private static void parseHTMLContent(final MailData mailData) {
 		if (!StringUtils.isEmpty(mailData.getHtmlContent())) {
 			mailData.setHtmlDocument(Jsoup.parse(mailData.getHtmlContent()));
 		}

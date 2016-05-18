@@ -1,9 +1,11 @@
 package org.ht.iops.events;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ht.iops.framework.mail.MailData;
+import org.ht.iops.rest.request.Attachment;
 import org.springframework.util.Assert;
 
 public class IOpsEvent {
@@ -11,6 +13,7 @@ public class IOpsEvent {
 	private Map<String, String> attributes;
 	private String[] messageArguments;
 	private MailData mailData;
+	private List<Attachment> attachments;
 
 	protected IOpsEvent(final String type) {
 		Assert.hasText(type, "Event type cannot be null");
@@ -103,5 +106,13 @@ public class IOpsEvent {
 	 */
 	public void addAttributes(String attributeName, String attributeValue) {
 		this.attributes.put(attributeName, attributeValue);
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
 	}
 }

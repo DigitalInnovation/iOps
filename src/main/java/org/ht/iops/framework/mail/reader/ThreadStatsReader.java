@@ -8,7 +8,6 @@ import java.util.Map;
 import org.ht.iops.db.beans.reader.CPUStats;
 import org.ht.iops.db.beans.reader.ThreadStats;
 import org.ht.iops.db.repository.StatusRepository;
-import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.db.repository.reader.ThreadStatsRepository;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.framework.mail.MailConstants;
@@ -20,12 +19,9 @@ public class ThreadStatsReader extends CPUStatsReader {
 	@Autowired
 	private ThreadStatsRepository threadStatsRepository;
 
-	public ThreadStatsReader(final MimeMessageReader mimeMessageReader,
-			final StatusRepository statusRepository,
-			final AppConfigRepository appConfigRepository,
+	public ThreadStatsReader(final StatusRepository statusRepository,
 			final EventPublisher eventPublisher) {
-		super(mimeMessageReader, statusRepository, appConfigRepository,
-				eventPublisher);
+		super(statusRepository, eventPublisher);
 	}
 
 	@Override
@@ -58,6 +54,7 @@ public class ThreadStatsReader extends CPUStatsReader {
 		threadStats.setValue(Double.valueOf(value));
 	}
 
+	@Override
 	protected List<? extends CPUStats> getStatsList(
 			final Map<String, CPUStats> cpuRecords) {
 		List<ThreadStats> stats = new ArrayList<>();

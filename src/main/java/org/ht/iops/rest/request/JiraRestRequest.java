@@ -1,5 +1,7 @@
 package org.ht.iops.rest.request;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,6 +14,7 @@ public class JiraRestRequest extends RestRequest {
 	private String originalEstimate;
 	private String remainingEstimate;
 	private String issueType;
+	private Map<String, String> customFields;
 
 	/**
 	 * @return the summary
@@ -145,5 +148,13 @@ public class JiraRestRequest extends RestRequest {
 	 */
 	public void setIssueType(String issueType) {
 		this.issueType = issueType;
+	}
+
+	public Map<String, String> getCustomFields() {
+		return customFields;
+	}
+
+	public void setCustomFields(Map<String, String> customFields) {
+		this.customFields = customFields;
 	}
 }

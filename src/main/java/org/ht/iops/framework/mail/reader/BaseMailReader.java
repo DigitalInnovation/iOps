@@ -1,10 +1,11 @@
 package org.ht.iops.framework.mail.reader;
 
+import static org.ht.iops.framework.mail.reader.MimeMessageReader.parseMessage;
+
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
 import org.ht.iops.db.repository.StatusRepository;
-import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
@@ -12,7 +13,6 @@ import org.ht.iops.framework.mail.MailData;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Abstract mail reader to provide basic functionalities like
@@ -32,22 +32,12 @@ public abstract class BaseMailReader {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(BaseMailReader.class);
 
-	@Autowired
-	private MimeMessageReader mimeMessageReader;
-	@Autowired
 	private StatusRepository statusRepository;
-	@Autowired
-	protected AppConfigRepository appConfigRepository;
-	@Autowired
 	protected EventPublisher eventPublisher;
 
-	public BaseMailReader(final MimeMessageReader mimeMessageReader,
-			final StatusRepository statusRepository,
-			final AppConfigRepository appConfigRepository,
+	public BaseMailReader(final StatusRepository statusRepository,
 			final EventPublisher eventPublisher) {
-		this.mimeMessageReader = mimeMessageReader;
 		this.statusRepository = statusRepository;
-		this.appConfigRepository = appConfigRepository;
 		this.eventPublisher = eventPublisher;
 	}
 
@@ -60,8 +50,8 @@ public abstract class BaseMailReader {
 		Status status = null;
 		try {
 			preProcess(message);
-			status = postProcess(message, mimeMessageReader
-					.parseMessage(message, requireHTMLElements()));
+			status = postProcess(message,
+					parseMessage(message, requireHTMLElements()));
 		} catch (Exception exception) {
 			throw new ApplicationException("Generic Exception", exception);
 		}
@@ -92,4 +82,8 @@ public abstract class BaseMailReader {
 	}
 
 	protected abstract String getReportName();
+
+	protected void publishEvent(final IOpsEvent event) {
+		eventPublisher.createEvent(event);
+	}
 }

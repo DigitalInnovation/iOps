@@ -10,7 +10,6 @@ import java.util.Map;
 import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationValidationException;
-import org.ht.iops.framework.mail.reader.MimeMessageReader;
 import org.ht.iops.service.EmailServiceTest;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,8 +33,8 @@ public class JiraInstructionsTest {
 	public void setUp() {
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
 		applicationContext.setServletContext(new MockServletContext());
-		jiraInstructions = new JiraInstructions(new MimeMessageReader(), null,
-				null, new EventPublisher(applicationContext));
+		jiraInstructions = new JiraInstructions(null,
+				new EventPublisher(applicationContext));
 	}
 
 	@Test

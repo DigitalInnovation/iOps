@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.instruction.InvalidInstructions;
 import org.ht.iops.framework.mail.reader.instruction.JiraInstructions;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class MailReaderFactoryTest {
 	@Mock
 	private InvalidInstructions invalidInstructions;
 	@Mock
-	private SyncCallReader syncCallReader;
+	private SyncCallAlert syncCallReader;
 	@Mock
 	private MimeMessage message;
 
