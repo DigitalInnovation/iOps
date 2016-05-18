@@ -96,6 +96,7 @@ public class JiraInstructionsTest {
 		Map<String, String> bodyTokens = new HashMap<>();
 		bodyTokens.put("description", "Test_Description");
 		bodyTokens.put("owner", "Test_Owner");
+		bodyTokens.put("worktype", "Incident");
 		return bodyTokens;
 	}
 
