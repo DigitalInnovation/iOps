@@ -1,8 +1,11 @@
 package org.ht.iops.events.adapters;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ht.iops.db.beans.config.AppConfig;
 import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.AppEvent;
 import org.ht.iops.events.EmailEvent;
@@ -36,8 +39,28 @@ public class JiraAdapter
 		request.setIssueType(appConfigRepository
 				.findByNameAndType(additionalAttributes[0], "issuetype")
 				.getValue());
+		setPriority(request, iOpsEvent);
 		setCustomFields(request, iOpsEvent);
+		setForceCreate(request, iOpsEvent);
 		return request;
+	}
+
+	private void setForceCreate(JiraRestRequest request, IOpsEvent iOpsEvent) {
+		if (hasText(iOpsEvent.getAttributes().get("forceCreate"))) {
+			request.setForceCreate(Boolean.parseBoolean(
+					iOpsEvent.getAttributes().get("forceCreate")));
+		}
+	}
+
+	private void setPriority(JiraRestRequest request, IOpsEvent iOpsEvent) {
+		String priority = iOpsEvent.getAttributes().get("priority");
+		if (hasText(priority)) {
+			AppConfig config = appConfigRepository
+					.findByNameAndType("jirapriority", priority);
+			if (null != config) {
+				request.setPriority(config.getValue());
+			}
+		}
 	}
 
 	private void setCustomFields(final JiraRestRequest request,

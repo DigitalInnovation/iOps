@@ -1,15 +1,17 @@
 package org.ht.iops.framework.mail.reader;
 
+import static org.springframework.util.StringUtils.startsWithIgnoreCase;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
+import org.ht.iops.framework.mail.reader.incident.IncidentReader;
 import org.ht.iops.framework.mail.reader.instruction.InvalidInstructions;
 import org.ht.iops.framework.mail.reader.instruction.JiraInstructions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class MailReaderFactory {
@@ -21,17 +23,20 @@ public class MailReaderFactory {
 	private JiraInstructions jiraInstructions;
 	private InvalidInstructions invalidInstructions;
 	private SyncCallAlert syncCallReader;
+	private IncidentReader incidentReader;
 
 	public MailReaderFactory(final CPUStatsReader cpuStatsReader,
 			final ThreadStatsReader threadStatsReader,
 			final JiraInstructions jiraInstructions,
 			final InvalidInstructions invalidInstructions,
-			final SyncCallAlert syncCallReader) {
+			final SyncCallAlert syncCallReader,
+			final IncidentReader incidentReader) {
 		this.cpuStatsReader = cpuStatsReader;
 		this.threadStatsReader = threadStatsReader;
 		this.jiraInstructions = jiraInstructions;
 		this.invalidInstructions = invalidInstructions;
 		this.syncCallReader = syncCallReader;
+		this.incidentReader = incidentReader;
 	}
 
 	public BaseMailReader getReader(MimeMessage message) {
@@ -43,12 +48,13 @@ public class MailReaderFactory {
 			} else if (message.getSubject()
 					.contains("PLATFORM_SUPPORT_APP_THREAD_COUNT")) {
 				mailReader = threadStatsReader;
-			} else if (StringUtils.startsWithIgnoreCase(message.getSubject(),
-					"iOps")) {
+			} else if (startsWithIgnoreCase(message.getSubject(), "iOps")) {
 				mailReader = createInstructionsReader(message.getSubject());
-			} else if (StringUtils.startsWithIgnoreCase(message.getSubject(),
+			} else if (startsWithIgnoreCase(message.getSubject(),
 					"Ecom Splunk Alert | Major")) {
 				mailReader = createSplunkReportReader(message.getSubject());
+			} else if (message.getSubject().contains("INC000")) {
+				mailReader = incidentReader;
 			}
 		} catch (MessagingException exception) {
 			LOGGER.error("Error occured while parsing message", exception);

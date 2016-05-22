@@ -1,0 +1,28 @@
+https://mnscorp-rod.onbmc.com/arsys/servlet/ViewFormServlet?form=NTE%3aNotifier&server=onbmc-s&eid=NTS000001229926
+Incident INC000029493417 has been assigned to your group 'eComm Platform Support'.
+Incident details are as follows:
+Service Type: User Service Request
+Priority: Medium
+Summary: EMAIL-PROBE (Site Confidence Alert:Script Step[29142885]) - Site Confidence Alert Script Step F
+Notes: FAILED TO CREATE INCOMING ASSET INCIDENT:
+Asset Tag not found
+
+Detailed Description -
+Text: EMAIL-PROBE (Site Confidence Alert:Script Step[29142885]) - Action=Please call M_and_S Multi Channel Service Desk (Remedy=SC_MC_SUP) - see prodsupp,Msg=Site Confidence Alert Script Step FAILURE Email (Error Ref No: 29142885) - Subject: Script Step Failure Alert (New M&S.com Tablet - Journey 1 (GM) at Click  Select Date [S2]) - NCC Group Website Performance Error Ref. No. 29142885.
+Location: Stockley Park
+First: 2016-05-22T14:44:08
+Last: 2016-05-22T14:44:08
+Docs: Not Specified
+Netcool Agent: NCC Group Web Performance <customer.support@siteconfidence.co.uk
+Netcool alert: http://mshsrmnsukp1250/NCHistoricAlerts/ShowNetcoolDetails.asp?Serial=27081407
+AMS: http://mshsrmnsukp1250/AMS/History.asp?Code=ECOM
+BatchAlert=No
+
+Asset Tag: UNKNOWN
+External System Name:
+External Reference ID:  27081407
+External System User ID:
+External System Alias:  Create
+Support Group Alias:  Service Desk - Multi Channel
+External System User Defined 1:  UpdateUserDetails_No
+External System User Defined 2:  AutoResolve_No

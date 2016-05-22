@@ -68,30 +68,8 @@ public abstract class OpsInstructions extends BaseMailReader {
 	protected abstract void validateSubjectTokens(
 			final List<String> subjectTokens);
 
-	private Map<String, String> parseBody(final MailData mailData) {
-		Map<String, String> bodyTokens = new HashMap<>();
-		if (!StringUtils.isEmpty(mailData.getPlainContent())) {
-			parsePlainBody(mailData.getPlainContent(), bodyTokens);
-		} else {
-			parseHTMLBody(mailData.getHtmlDocument(), bodyTokens);
-		}
-		return bodyTokens;
-	}
-
-	private void parsePlainBody(final String plainContent,
-			final Map<String, String> bodyTokens) {
-		List<String> tokens = Arrays.asList(
-				StringUtils.tokenizeToStringArray(plainContent, "\r\n"));
-		tokens.stream().forEach(token -> {
-			String[] keyValuePair = StringUtils.tokenizeToStringArray(token,
-					":", true, false);
-			bodyTokens.put(keyValuePair[0].toLowerCase(), keyValuePair[1]);
-		});
-		LOGGER.debug("Plain body tokens: " + bodyTokens);
-	}
-
-	protected void parseHTMLBody(final Document htmlDocument,
-			final Map<String, String> bodyTokens) {
+	@Override
+	protected Map<String, String> parseHTMLBody(final Document htmlDocument) {
 		final StringBuffer plainContent = new StringBuffer("");
 		Elements elements = htmlDocument.getElementsByClass("WordSection1");
 		if (!elements.isEmpty()) {
@@ -100,7 +78,7 @@ public abstract class OpsInstructions extends BaseMailReader {
 			parseOutlookRichText(plainContent, htmlDocument);
 		}
 		LOGGER.debug("Plain text from HTML content: " + plainContent);
-		parsePlainBody(plainContent.toString(), bodyTokens);
+		return parsePlainBody(plainContent.toString());
 	}
 
 	protected void parseOutlookRichText(StringBuffer plainContent,

@@ -1,5 +1,6 @@
 package org.ht.iops.events;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,13 @@ public class IOpsEvent {
 	private String[] messageArguments;
 	private MailData mailData;
 	private List<Attachment> attachments;
+	private boolean responseRequired;
 
 	protected IOpsEvent(final String type) {
 		Assert.hasText(type, "Event type cannot be null");
 		this.type = type;
 		this.attributes = new HashMap<>();
+		this.responseRequired = true;
 	}
 
 	public IOpsEvent(final String type, final MailData mailData) {
@@ -56,14 +59,12 @@ public class IOpsEvent {
 		this.attributes = attributes;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "Event [type=" + type + ", attributes=" + attributes + "]";
+		return "IOpsEvent [type=" + type + ", attributes=" + attributes
+				+ ", messageArguments=" + Arrays.toString(messageArguments)
+				+ ", mailData=" + mailData + ", attachments=" + attachments
+				+ ", responseRequired=" + responseRequired + "]";
 	}
 
 	/**
@@ -114,5 +115,13 @@ public class IOpsEvent {
 
 	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
+	}
+
+	public boolean isResponseRequired() {
+		return responseRequired;
+	}
+
+	public void setResponseRequired(boolean responseRequired) {
+		this.responseRequired = responseRequired;
 	}
 }

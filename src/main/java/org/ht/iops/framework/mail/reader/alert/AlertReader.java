@@ -71,6 +71,7 @@ public abstract class AlertReader<T> extends BaseMailReader {
 		}
 		LOGGER.debug("HTML message" + mailData.getHtmlContent());
 		try {
+			// TODO use the basemailreader parsebody method
 			List<T> details = getDetailsFromHTML(mailData);
 			applyTransformations(details);
 			publishEvent(createAlertEvent(details));

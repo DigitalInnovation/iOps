@@ -36,7 +36,7 @@ public class ApplicationEventListner {
 					createEvent.getSource().getType(), listnerName, request,
 					requestAdapter.getResponseClass(),
 					requestAdapter.getAPIType());
-			if (emailRequired) {
+			if (emailRequired && createEvent.getSource().isResponseRequired()) {
 				LOGGER.debug("Creating email event");
 				emailEvent = requestAdapter.createEmailEvent(createEvent,
 						response);

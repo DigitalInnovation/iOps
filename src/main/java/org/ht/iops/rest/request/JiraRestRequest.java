@@ -15,6 +15,8 @@ public class JiraRestRequest extends RestRequest {
 	private String remainingEstimate;
 	private String issueType;
 	private Map<String, String> customFields;
+	private String priority;
+	private boolean forceCreate;
 
 	/**
 	 * @return the summary
@@ -156,5 +158,35 @@ public class JiraRestRequest extends RestRequest {
 
 	public void setCustomFields(Map<String, String> customFields) {
 		this.customFields = customFields;
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public String getPriority() {
+		return priority;
+	}
+
+	/**
+	 * @param priority
+	 *            the priority to set
+	 */
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	/**
+	 * @return the forceCreate
+	 */
+	public boolean isForceCreate() {
+		return forceCreate;
+	}
+
+	/**
+	 * @param forceCreate
+	 *            the forceCreate to set
+	 */
+	public void setForceCreate(boolean forceCreate) {
+		this.forceCreate = forceCreate;
 	}
 }

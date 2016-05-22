@@ -2,6 +2,11 @@ package org.ht.iops.framework.mail.reader;
 
 import static org.ht.iops.framework.mail.reader.MimeMessageReader.parseMessage;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.db.beans.Status;
@@ -10,9 +15,11 @@ import org.ht.iops.events.IOpsEvent;
 import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationException;
 import org.ht.iops.framework.mail.MailData;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Abstract mail reader to provide basic functionalities like
@@ -85,5 +92,33 @@ public abstract class BaseMailReader {
 
 	protected void publishEvent(final IOpsEvent event) {
 		eventPublisher.createEvent(event);
+	}
+
+	protected Map<String, String> parseBody(final MailData mailData) {
+		Map<String, String> bodyTokens = null;
+		if (!StringUtils.isEmpty(mailData.getPlainContent())) {
+			bodyTokens = parsePlainBody(mailData.getPlainContent());
+		} else {
+			bodyTokens = parseHTMLBody(mailData.getHtmlDocument());
+		}
+		return bodyTokens;
+	}
+
+	protected Map<String, String> parsePlainBody(final String plainContent) {
+		Map<String, String> bodyTokens = new HashMap<>();
+		List<String> tokens = Arrays.asList(
+				StringUtils.tokenizeToStringArray(plainContent, "\r\n"));
+		tokens.stream().forEach(token -> {
+			String[] keyValuePair = token.split(":", 2);
+			if (null != keyValuePair && keyValuePair.length > 1)
+				bodyTokens.put(keyValuePair[0].trim().toLowerCase(),
+						keyValuePair[1].trim());
+		});
+		LOGGER.debug("Plain body tokens: " + bodyTokens);
+		return bodyTokens;
+	}
+
+	protected Map<String, String> parseHTMLBody(final Document htmlDocument) {
+		return new HashMap<>();
 	}
 }
