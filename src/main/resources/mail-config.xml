@@ -23,7 +23,7 @@
 		id="imapIdleAdaptar"
 		store-uri="${spring.mail.protocol}://#{credentials.mailCredentials}@#{credentials.mailHost}/#{credentials.folder}"
 		channel="recieveEmailChannel" auto-startup="true"
-		should-delete-messages="false" java-mail-properties="javaMailProperties" />
+		should-delete-messages="true" java-mail-properties="javaMailProperties" />
 	<int:channel id="recieveEmailChannel">
 		<int:interceptors>
 			<int:wire-tap channel="logger" />
