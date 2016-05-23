@@ -62,9 +62,9 @@ public class IncidentReader extends BaseMailReader {
 		notNull(tokens, "Invalid details recieved.");
 		isTrue(tokens.length == 3, "Invalid details recieved.");
 		Map<String, String> subjectTokens = new HashMap<>();
-		subjectTokens.put("priority", tokens[0]);
-		subjectTokens.put("incident", tokens[1]);
-		subjectTokens.put("details", tokens[2]);
+		subjectTokens.put("priority", tokens[0].replaceAll("FW: ", "").trim());
+		subjectTokens.put("incident", tokens[1].trim());
+		subjectTokens.put("details", tokens[2].trim());
 		LOGGER.debug("Subject tokens: " + subjectTokens);
 		return subjectTokens;
 	}
