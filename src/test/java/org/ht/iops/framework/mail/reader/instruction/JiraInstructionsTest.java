@@ -40,7 +40,8 @@ public class JiraInstructionsTest {
 	@Test
 	public void createEvent_NullBodyTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
-		thrown.expectMessage("Jira description and owner is a required field.");
+		thrown.expectMessage(
+				"Jira description, owner & worktype is a required field.");
 		jiraInstructions.createEvent(new HashMap<String, String>(),
 				new ArrayList<String>(), EmailServiceTest.setupMailData());
 	}
@@ -48,7 +49,8 @@ public class JiraInstructionsTest {
 	@Test
 	public void createEvent_NullOwnerTokens_ShouldThrowAppValException() {
 		thrown.expect(ApplicationValidationException.class);
-		thrown.expectMessage("Jira description and owner is a required field.");
+		thrown.expectMessage(
+				"Jira description, owner & worktype is a required field.");
 		Map<String, String> bodyTokens = createBodyTokens();
 		bodyTokens.remove("owner");
 		jiraInstructions.createEvent(bodyTokens, new ArrayList<String>(),
