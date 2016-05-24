@@ -88,7 +88,7 @@ public class IncidentReader extends BaseMailReader {
 		transformedTokens.put("description", mailTokens.get("description"));
 		transformedTokens.put("worktype", "Incident");
 		transformedTokens.put("labels", getLabels(mailTokens));
-		transformedTokens.put("owner", "htomar");
+		transformedTokens.put("owner", "ayadav");
 		transformedTokens.put("priority", mailTokens.get("priority"));
 		transformedTokens.put("forceCreate", "true");
 		return transformedTokens;

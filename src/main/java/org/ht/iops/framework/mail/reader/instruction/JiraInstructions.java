@@ -38,7 +38,7 @@ public class JiraInstructions extends OpsInstructions {
 		if (StringUtils.isEmpty(description) || StringUtils.isEmpty(owner)
 				|| StringUtils.isEmpty(workType)) {
 			throw new ApplicationValidationException(
-					"Jira description and owner is a required field.",
+					"Jira description, owner & worktype is a required field.",
 					getInstructionName());
 		}
 	}
