@@ -23,6 +23,7 @@ import org.ht.iops.framework.mail.reader.BaseMailReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class IncidentReader extends BaseMailReader {
@@ -88,18 +89,20 @@ public class IncidentReader extends BaseMailReader {
 				mailTokens.get("incident") + " | " + mailTokens.get("summary"));
 		transformedTokens.put("description", mailTokens.get("description"));
 		transformedTokens.put("worktype", "Incident");
-		transformedTokens.put("labels", getLabels(mailTokens));
+		getLabels(mailTokens, transformedTokens);
 		transformedTokens.put("owner", "ayadav");
 		transformedTokens.put("priority", mailTokens.get("priority"));
 		transformedTokens.put("forceCreate", "true");
 		return transformedTokens;
 	}
 
-	private String getLabels(Map<String, String> mailTokens) {
-		StringBuffer labels = new StringBuffer();
-		labels.append(
-				resolveQueue(mailTokens.get("details").split(":")[0].trim()));
-		return labels.toString();
+	private void getLabels(final Map<String, String> mailTokens,
+			final Map<String, String> transformedTokens) {
+		String queueLabel = resolveQueue(
+				mailTokens.get("details").split(":")[0].trim());
+		if (StringUtils.hasText(queueLabel)) {
+			transformedTokens.put("labels", queueLabel);
+		}
 	}
 
 	private String resolveQueue(final String queueName) {
