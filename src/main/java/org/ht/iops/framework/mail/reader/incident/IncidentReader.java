@@ -71,7 +71,8 @@ public class IncidentReader extends BaseMailReader {
 
 	@Override
 	protected Map<String, String> parsePlainBody(final String plainContent) {
-		Map<String, String> bodyTokens = super.parsePlainBody(plainContent);
+		Map<String, String> bodyTokens = super.parsePlainBody(
+				plainContent.substring(0, plainContent.indexOf("Notes:")));
 		String notes = plainContent.substring(plainContent.indexOf("Notes:"));
 		if (null != notes && notes.length() > 2000)
 			notes = notes.substring(0, 2000);
@@ -101,7 +102,7 @@ public class IncidentReader extends BaseMailReader {
 		return labels.toString();
 	}
 
-	private String resolveQueue(String queueName) {
+	private String resolveQueue(final String queueName) {
 		AppConfig config = configRepository.findByNameAndType("queuename",
 				queueName);
 		notNull(config, "Invalid details recieved.");
