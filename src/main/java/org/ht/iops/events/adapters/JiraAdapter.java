@@ -41,14 +41,28 @@ public class JiraAdapter
 				.getValue());
 		setPriority(request, iOpsEvent);
 		setCustomFields(request, iOpsEvent);
-		setForceCreate(request, iOpsEvent);
+		setFlags(request, iOpsEvent);
+		setJQL(request, iOpsEvent);
 		return request;
 	}
 
-	private void setForceCreate(JiraRestRequest request, IOpsEvent iOpsEvent) {
+	private void setJQL(JiraRestRequest request, IOpsEvent iOpsEvent) {
+		if (hasText(iOpsEvent.getAttributes().get("jql"))) {
+			request.setJql("project=" + request.getProjectName() + "&type="
+					+ request.getIssueType() + "&"
+					+ iOpsEvent.getAttributes().get("jql"));
+		}
+	}
+
+	private void setFlags(JiraRestRequest request, IOpsEvent iOpsEvent) {
 		if (hasText(iOpsEvent.getAttributes().get("forceCreate"))) {
 			request.setForceCreate(Boolean.parseBoolean(
 					iOpsEvent.getAttributes().get("forceCreate")));
+		}
+
+		if (hasText(iOpsEvent.getAttributes().get("linkJira"))) {
+			request.setLinkJira(Boolean
+					.parseBoolean(iOpsEvent.getAttributes().get("linkJira")));
 		}
 	}
 

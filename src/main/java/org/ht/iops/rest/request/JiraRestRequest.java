@@ -17,6 +17,8 @@ public class JiraRestRequest extends RestRequest {
 	private Map<String, String> customFields;
 	private String priority;
 	private boolean forceCreate;
+	private String jql;
+	private boolean linkJira;
 
 	/**
 	 * @return the summary
@@ -134,7 +136,9 @@ public class JiraRestRequest extends RestRequest {
 				+ summary + ", description=" + description + ", labels="
 				+ labels + ", owner=" + owner + ", originalEstimate="
 				+ originalEstimate + ", remainingEstimate=" + remainingEstimate
-				+ "]";
+				+ ", issueType=" + issueType + ", customFields=" + customFields
+				+ ", priority=" + priority + ", forceCreate=" + forceCreate
+				+ ", jql=" + jql + ", linkJira=" + linkJira + "]";
 	}
 
 	/**
@@ -188,5 +192,35 @@ public class JiraRestRequest extends RestRequest {
 	 */
 	public void setForceCreate(boolean forceCreate) {
 		this.forceCreate = forceCreate;
+	}
+
+	/**
+	 * @return the jql
+	 */
+	public String getJql() {
+		return jql;
+	}
+
+	/**
+	 * @param jql
+	 *            the jql to set
+	 */
+	public void setJql(String jql) {
+		this.jql = jql;
+	}
+
+	/**
+	 * @return the linkJira
+	 */
+	public boolean isLinkJira() {
+		return linkJira;
+	}
+
+	/**
+	 * @param linkJira
+	 *            the linkJira to set
+	 */
+	public void setLinkJira(boolean linkJira) {
+		this.linkJira = linkJira;
 	}
 }
