@@ -8,6 +8,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.incident.IncidentReader;
+import org.ht.iops.framework.mail.reader.instruction.BulkJira;
 import org.ht.iops.framework.mail.reader.instruction.InvalidInstructions;
 import org.ht.iops.framework.mail.reader.instruction.JiraInstructions;
 import org.junit.Before;
@@ -36,6 +37,8 @@ public class MailReaderFactoryTest {
 	@Mock
 	private IncidentReader incidentReader;
 	@Mock
+	private BulkJira bulkJira;
+	@Mock
 	private MimeMessage message;
 
 	@Rule
@@ -45,7 +48,7 @@ public class MailReaderFactoryTest {
 	public void setUp() {
 		readerFactory = new MailReaderFactory(cpuStatsReader, threadStatsReader,
 				jiraInstructions, invalidInstructions, syncCallReader,
-				incidentReader);
+				incidentReader, bulkJira);
 	}
 
 	@Test

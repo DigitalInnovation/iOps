@@ -7,6 +7,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.incident.IncidentReader;
+import org.ht.iops.framework.mail.reader.instruction.BulkJira;
 import org.ht.iops.framework.mail.reader.instruction.InvalidInstructions;
 import org.ht.iops.framework.mail.reader.instruction.JiraInstructions;
 import org.slf4j.Logger;
@@ -24,19 +25,21 @@ public class MailReaderFactory {
 	private InvalidInstructions invalidInstructions;
 	private SyncCallAlert syncCallReader;
 	private IncidentReader incidentReader;
+	private BulkJira bulkJira;
 
 	public MailReaderFactory(final CPUStatsReader cpuStatsReader,
 			final ThreadStatsReader threadStatsReader,
 			final JiraInstructions jiraInstructions,
 			final InvalidInstructions invalidInstructions,
 			final SyncCallAlert syncCallReader,
-			final IncidentReader incidentReader) {
+			final IncidentReader incidentReader, final BulkJira bulkJira) {
 		this.cpuStatsReader = cpuStatsReader;
 		this.threadStatsReader = threadStatsReader;
 		this.jiraInstructions = jiraInstructions;
 		this.invalidInstructions = invalidInstructions;
 		this.syncCallReader = syncCallReader;
 		this.incidentReader = incidentReader;
+		this.bulkJira = bulkJira;
 	}
 
 	public BaseMailReader getReader(MimeMessage message) {
@@ -67,7 +70,9 @@ public class MailReaderFactory {
 
 	private BaseMailReader createInstructionsReader(String subject) {
 		BaseMailReader mailReader = invalidInstructions;
-		if (subject.toLowerCase().contains("jira")) {
+		if (subject.toLowerCase().contains("bulkjira")) {
+			mailReader = bulkJira;
+		} else if (subject.toLowerCase().contains("jira")) {
 			mailReader = jiraInstructions;
 		}
 		return mailReader;
