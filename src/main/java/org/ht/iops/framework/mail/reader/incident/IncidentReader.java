@@ -95,6 +95,7 @@ public class IncidentReader extends BaseMailReader {
 		transformedTokens.put("linkJira", "true");
 		createJQL(mailTokens, transformedTokens);
 		return transformedTokens;
+
 	}
 
 	private void createJQL(Map<String, String> mailTokens,
