@@ -101,7 +101,7 @@ public class IncidentReader extends BaseMailReader {
 			Map<String, String> transformedTokens) {
 		StringBuffer jql = new StringBuffer();
 		jql.append("summary~\"").append(mailTokens.get("incident"))
-				.append("\"&").append("\"Work Type\"=\"Incident\"")
+				.append("\"&").append("\"cf[12735]\"=\"Incident\"")
 				.append("order by created desc");
 		transformedTokens.put("jql", jql.toString());
 	}
