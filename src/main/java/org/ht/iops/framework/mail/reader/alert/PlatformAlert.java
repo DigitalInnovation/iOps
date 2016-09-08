@@ -44,7 +44,7 @@ public class PlatformAlert extends AlertReader<Attachment> {
 			"Status", "ExecutionTime"};
 
 	private static final String[] PLATFORM_ALERTS_HEADERS = {"Alert",
-			"Environment", "Status"};
+			"Environment", "Summary"};
 
 	/**
 	 * Constructor for <tt>PlatformAlert</tt> derived from the super class
