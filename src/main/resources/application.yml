@@ -28,6 +28,7 @@ logging:
     org.ht.iops.integration: DEBUG
     org.ht.iops.service: DEBUG
     org.ht.iops.configurations: DEBUG
+    org.ht.iops.framework.mail.reader.alert: DEBUG
 #Custom properties
 custom:
   akamai:

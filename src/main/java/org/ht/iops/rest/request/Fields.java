@@ -11,6 +11,16 @@ public class Fields {
 	@JsonProperty("short")
 	private boolean shortText;
 
+	public Fields() {
+	}
+
+	public Fields(final String title, final String value,
+			final boolean shortText) {
+		this.title = title;
+		this.value = value;
+		this.shortText = shortText;
+	}
+
 	public String getTitle() {
 		return title;
 	}

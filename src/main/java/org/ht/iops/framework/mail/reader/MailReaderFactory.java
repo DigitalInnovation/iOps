@@ -5,6 +5,7 @@ import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.ht.iops.framework.mail.reader.alert.PlatformAlert;
 import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.incident.IncidentReader;
 import org.ht.iops.framework.mail.reader.instruction.BulkJira;
@@ -26,13 +27,15 @@ public class MailReaderFactory {
 	private SyncCallAlert syncCallReader;
 	private IncidentReader incidentReader;
 	private BulkJira bulkJira;
+	private PlatformAlert alert;
 
 	public MailReaderFactory(final CPUStatsReader cpuStatsReader,
 			final ThreadStatsReader threadStatsReader,
 			final JiraInstructions jiraInstructions,
 			final InvalidInstructions invalidInstructions,
 			final SyncCallAlert syncCallReader,
-			final IncidentReader incidentReader, final BulkJira bulkJira) {
+			final IncidentReader incidentReader, final BulkJira bulkJira,
+			final PlatformAlert alert) {
 		this.cpuStatsReader = cpuStatsReader;
 		this.threadStatsReader = threadStatsReader;
 		this.jiraInstructions = jiraInstructions;
@@ -40,6 +43,7 @@ public class MailReaderFactory {
 		this.syncCallReader = syncCallReader;
 		this.incidentReader = incidentReader;
 		this.bulkJira = bulkJira;
+		this.alert = alert;
 	}
 
 	public BaseMailReader getReader(MimeMessage message) {
@@ -58,6 +62,10 @@ public class MailReaderFactory {
 				mailReader = createSplunkReportReader(message.getSubject());
 			} else if (message.getSubject().contains("INC000")) {
 				mailReader = incidentReader;
+			} else if (message.getSubject().contains("MNS PLATFORM Alert")
+					|| message.getSubject()
+							.contains("M&S Control-M JOB alert")) {
+				mailReader = alert;
 			}
 		} catch (MessagingException exception) {
 			LOGGER.error("Error occured while parsing message", exception);

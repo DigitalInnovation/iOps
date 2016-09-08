@@ -1,5 +1,6 @@
 package org.ht.iops.rest.request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,6 +15,10 @@ public class Attachment {
 	private String text;
 	private String color;
 	private List<Fields> fields;
+
+	public Attachment() {
+		fields = new ArrayList<>();
+	}
 
 	/**
 	 * @return the fallback
@@ -109,8 +114,8 @@ public class Attachment {
 		return fields;
 	}
 
-	public void setFields(List<Fields> fields) {
-		this.fields = fields;
+	public void addField(Fields fields) {
+		this.fields.add(fields);
 	}
 
 	@Override

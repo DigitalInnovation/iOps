@@ -17,6 +17,7 @@ hs_err_pid*
 *.iml
 .idea/
 .settings
+.settings/
 .classpath
 .metadata/
 .eclipse-pmd

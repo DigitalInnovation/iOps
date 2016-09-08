@@ -5,10 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.ht.iops.db.beans.SlackConfig;
 import org.ht.iops.db.beans.config.AppConfig;
@@ -35,8 +31,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public class PlatformAlertTest {
 	private String DATE_FORMAT = "yyyyMMdd HHmmss";
-	private static Document successHTML = null;
-	private static Document errorHTML = null;
+	private static Document platformAlert = null;
+	private static Document ctrlMAlert = null;
 
 	private PlatformAlert alert;
 	private SlackAdapter slackAdapter;
@@ -55,14 +51,14 @@ public class PlatformAlertTest {
 
 	@BeforeClass
 	public static void classSetup() throws IOException {
-		InputStream successHTMLStream = new ClassPathResource(
+		InputStream platformAlertHTMLStream = new ClassPathResource(
 				"message/templates/alert_1.html").getInputStream();
-		InputStream errorHTMLStream = new ClassPathResource(
-				"message/templates/SyncCallError.html").getInputStream();
-		successHTML = Jsoup.parse(successHTMLStream, "UTF-8", "");
-		errorHTML = Jsoup.parse(errorHTMLStream, "UTF-8", "");
-		successHTMLStream.close();
-		errorHTMLStream.close();
+		InputStream ctrlMAlertHTMLStream = new ClassPathResource(
+				"message/templates/alert_2.html").getInputStream();
+		platformAlert = Jsoup.parse(platformAlertHTMLStream, "UTF-8", "");
+		ctrlMAlert = Jsoup.parse(ctrlMAlertHTMLStream, "UTF-8", "");
+		platformAlertHTMLStream.close();
+		ctrlMAlertHTMLStream.close();
 	}
 
 	@Before
@@ -98,14 +94,10 @@ public class PlatformAlertTest {
 		assertThat(alert.requireHTMLElements()).isEqualTo(true);
 	}
 
-	private List<String> createExpectedList() {
-		List<String> expectedList = new ArrayList<>();
-		expectedList.add(getReportName());
-		expectedList.add("Thu Apr 28 21:00:00 2016");
-		expectedList.add("1669");
-		expectedList.add("110");
-		expectedList.add("6.59");
-		return expectedList;
+	@Test
+	public void postProcess_platformAlertHTML() {
+		setHTMLDocument(platformAlert);
+		alert.postProcess(null, mailData);
 	}
 
 	private AppConfig createAppConfig(final String type, final String name,
@@ -117,12 +109,8 @@ public class PlatformAlertTest {
 		return appConfig;
 	}
 
-	private String getSynCallDate(final Date date) {
-		return (new SimpleDateFormat(DATE_FORMAT)).format(date);
-	}
-
 	private String getReportName() {
-		return "Get Order List";
+		return "platformalert";
 	}
 
 	private Document createHTMLDocument(final String htmlText) {

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.ht.iops.framework.mail.reader.alert.PlatformAlert;
 import org.ht.iops.framework.mail.reader.alert.SyncCallAlert;
 import org.ht.iops.framework.mail.reader.incident.IncidentReader;
 import org.ht.iops.framework.mail.reader.instruction.BulkJira;
@@ -40,6 +41,8 @@ public class MailReaderFactoryTest {
 	private BulkJira bulkJira;
 	@Mock
 	private MimeMessage message;
+	@Mock
+	private PlatformAlert alert;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -48,7 +51,7 @@ public class MailReaderFactoryTest {
 	public void setUp() {
 		readerFactory = new MailReaderFactory(cpuStatsReader, threadStatsReader,
 				jiraInstructions, invalidInstructions, syncCallReader,
-				incidentReader, bulkJira);
+				incidentReader, bulkJira, alert);
 	}
 
 	@Test
