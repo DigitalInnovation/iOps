@@ -20,6 +20,8 @@ import org.ht.iops.exception.ApplicationRuntimeException;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -68,6 +70,25 @@ public class IncidentReader extends BaseMailReader {
 		subjectTokens.put("details", tokens[2].trim());
 		LOGGER.debug("Subject tokens: " + subjectTokens);
 		return subjectTokens;
+	}
+
+	@Override
+	protected Map<String, String> parseHTMLBody(final Document htmlDocument) {
+		final StringBuffer plainContent = new StringBuffer("");
+		parseOutlookHTML(plainContent, htmlDocument);
+		LOGGER.debug("Plain text from HTML content: " + plainContent);
+		return parsePlainBody(plainContent.toString());
+	}
+
+	protected void parseOutlookHTML(StringBuffer plainContent,
+			Document htmlDocument) {
+		Elements elements = htmlDocument.getElementsByTag("br");
+		elements.stream()
+				.filter(divElement -> divElement.toString().contains(":"))
+				.forEach(divElement -> divElement.childNodes().forEach(data -> {
+					plainContent.append(data.toString())
+							.append(System.lineSeparator());
+				}));
 	}
 
 	@Override
