@@ -68,6 +68,9 @@ public class IncidentReader extends BaseMailReader {
 		subjectTokens.put("priority", tokens[0].replaceAll("FW: ", "").trim());
 		subjectTokens.put("incident", tokens[1].trim());
 		subjectTokens.put("details", tokens[2].trim());
+		subjectTokens.put("summary", StringUtils.tokenizeToStringArray(
+				tokens[2].trim().replaceAll("RE:", "").replaceAll("FW:", ""),
+				":")[1]);
 		LOGGER.debug("Subject tokens: " + subjectTokens);
 		return subjectTokens;
 	}
@@ -82,7 +85,8 @@ public class IncidentReader extends BaseMailReader {
 
 	protected void parseOutlookHTML(StringBuffer plainContent,
 			Document htmlDocument) {
-		Elements elements = htmlDocument.getElementsByTag("br");
+		Elements elements = htmlDocument.body().children();
+		plainContent.append(htmlDocument.body().html());
 		elements.stream()
 				.filter(divElement -> divElement.toString().contains(":"))
 				.forEach(divElement -> divElement.childNodes().forEach(data -> {
@@ -93,8 +97,7 @@ public class IncidentReader extends BaseMailReader {
 
 	@Override
 	protected Map<String, String> parsePlainBody(final String plainContent) {
-		Map<String, String> bodyTokens = super.parsePlainBody(
-				plainContent.substring(0, plainContent.indexOf("Notes:")));
+		Map<String, String> bodyTokens = new HashMap<>();
 		String notes = plainContent.substring(plainContent.indexOf("Notes:"));
 		if (null != notes && notes.length() > 2000)
 			notes = notes.substring(0, 2000);
@@ -155,5 +158,10 @@ public class IncidentReader extends BaseMailReader {
 	@Override
 	protected String getReportName() {
 		return "incident";
+	}
+
+	@Override
+	protected boolean requireHTMLElements() {
+		return true;
 	}
 }
