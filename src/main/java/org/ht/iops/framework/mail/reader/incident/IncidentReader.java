@@ -101,6 +101,7 @@ public class IncidentReader extends BaseMailReader {
 		String notes = plainContent.substring(plainContent.indexOf("Notes:"));
 		if (null != notes && notes.length() > 2000)
 			notes = notes.substring(0, 2000);
+		notes.replaceAll("<br> ", "");
 		bodyTokens.put("description", notes);
 		return bodyTokens;
 	}
