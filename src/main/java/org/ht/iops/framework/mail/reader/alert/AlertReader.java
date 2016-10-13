@@ -71,7 +71,6 @@ public abstract class AlertReader<T> extends BaseMailReader {
 		}
 		LOGGER.debug("HTML message" + mailData.getHtmlContent());
 		try {
-			// TODO use the basemailreader parsebody method
 			List<T> details = getDetailsFromHTML(mailData);
 			applyTransformations(details);
 			publishEvent(createAlertEvent(details));
@@ -102,7 +101,8 @@ public abstract class AlertReader<T> extends BaseMailReader {
 	 *            - token from parse HTML message.
 	 * @return create event
 	 */
-	protected abstract IOpsEvent createAlertEvent(final List<T> arguments);
+	protected abstract List<IOpsEvent> createAlertEvent(
+			final List<T> arguments);
 
 	/**
 	 * Method for applying transformations on the input HTML. This method needs

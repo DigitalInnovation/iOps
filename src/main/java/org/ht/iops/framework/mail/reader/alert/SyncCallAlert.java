@@ -115,12 +115,14 @@ public class SyncCallAlert extends AlertReader<String> {
 	 * @return create event
 	 */
 	@Override
-	protected IOpsEvent createAlertEvent(final List<String> arguments) {
+	protected List<IOpsEvent> createAlertEvent(final List<String> arguments) {
+		List<IOpsEvent> events = new ArrayList<>();
 		Assert.notEmpty(arguments, "Arguments cannot be null.");
 		IOpsEvent event = createEvent(getReportName());
 		event.setMessageArguments(arguments.toArray(new String[]{}));
 		event.addAttributes("type", "alert");
-		return event;
+		events.add(event);
+		return events;
 	}
 
 	@Override

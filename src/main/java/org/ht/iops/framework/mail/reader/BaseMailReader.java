@@ -94,6 +94,11 @@ public abstract class BaseMailReader {
 		eventPublisher.createEvent(event);
 	}
 
+	protected void publishEvent(final List<IOpsEvent> events) {
+		if (null != events && !events.isEmpty())
+			events.stream().forEach(event -> eventPublisher.createEvent(event));
+	}
+
 	protected Map<String, String> parseBody(final MailData mailData) {
 		Map<String, String> bodyTokens = null;
 		if (!StringUtils.isEmpty(mailData.getPlainContent())) {

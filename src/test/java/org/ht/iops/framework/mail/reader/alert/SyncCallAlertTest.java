@@ -194,7 +194,8 @@ public class SyncCallAlertTest {
 	public void transformRequest_SlackAdapter_ValidateFormattedString() {
 		setUpSlackConfig();
 		SlackRequest request = slackAdapter.transformRequest(
-				syncCallReader.createAlertEvent(createExpectedList()), "test");
+				syncCallReader.createAlertEvent(createExpectedList()).get(0),
+				"test");
 		assertThat(request).isNotNull();
 		assertThat(request.getText()).as("Text").isEqualTo(
 				"*_`Major Alert`_* -> Sync call -> Get Order List -> Error percentage *6.59%* (110 out of 1669)");

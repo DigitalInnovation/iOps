@@ -3,6 +3,7 @@ package org.ht.iops.framework.mail.reader.alert;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.ht.iops.db.beans.JobConfig;
+import org.ht.iops.db.repository.JobConfigRepository;
 import org.ht.iops.db.repository.StatusRepository;
 import org.ht.iops.db.repository.config.AppConfigRepository;
 import org.ht.iops.events.IOpsEvent;
@@ -18,8 +21,6 @@ import org.ht.iops.events.publisher.EventPublisher;
 import org.ht.iops.exception.ApplicationValidationException;
 import org.ht.iops.framework.mail.MailData;
 import org.ht.iops.framework.mail.reader.BaseMailReader;
-import org.ht.iops.rest.request.Attachment;
-import org.ht.iops.rest.request.Fields;
 import org.jsoup.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-public class PlatformAlert extends AlertReader<Attachment> {
+public class PlatformAlert extends AlertReader<List<String>> {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(PlatformAlert.class);
@@ -40,11 +41,11 @@ public class PlatformAlert extends AlertReader<Attachment> {
 
 	private static final String[] DATE_FORMATS = {"yyyyMMddHHmmss"};
 
-	private static final String[] CTRLM_ALERTS_HEADERS = {"Job", "Node",
-			"Status", "ExecutionTime"};
+	private static final String CTRLM_ALERTS = "CTRL-M";
 
-	private static final String[] PLATFORM_ALERTS_HEADERS = {"Alert",
-			"Environment", "Summary"};
+	private static final String PLATFORM_ALERTS = "PLATFORM";
+
+	private JobConfigRepository jobConfigRepository;
 
 	/**
 	 * Constructor for <tt>PlatformAlert</tt> derived from the super class
@@ -60,12 +61,14 @@ public class PlatformAlert extends AlertReader<Attachment> {
 	 */
 	public PlatformAlert(final StatusRepository statusRepository,
 			final EventPublisher eventPublisher,
-			final AppConfigRepository configRepository) {
+			final AppConfigRepository configRepository,
+			final JobConfigRepository jobConfigRepository) {
 		super(statusRepository, eventPublisher, configRepository);
+		this.jobConfigRepository = jobConfigRepository;
 	}
 
 	@Override
-	protected List<Attachment> getDetailsFromHTML(MailData mailData) {
+	protected List<List<String>> getDetailsFromHTML(MailData mailData) {
 		List<Map<String, String>> details = new ArrayList<>();
 		LOGGER.trace("getDetailsFromHTML processing HTML");
 		try {
@@ -110,46 +113,58 @@ public class PlatformAlert extends AlertReader<Attachment> {
 	}
 
 	@Override
-	protected IOpsEvent createAlertEvent(List<Attachment> attachments) {
-		IOpsEvent event = null;
-		if (null != attachments && !attachments.isEmpty()) {
-			LOGGER.debug("Creating event type=alert, report=" + getReportName()
-					+ " attachment=" + attachments);
-			event = new IOpsEvent(getReportName(), null);
-			event.addAttributes("type", "alert");
-			event.setResponseRequired(false);
-			event.setAttachments(attachments);
+	protected List<IOpsEvent> createAlertEvent(
+			List<List<String>> eventDetails) {
+		List<IOpsEvent> events = new ArrayList<>();
+		if (null != eventDetails && !eventDetails.isEmpty()) {
+			eventDetails.stream()
+					.filter(event -> null != event && !event.isEmpty())
+					.forEach(event -> createAlertEvent(events, event));;
 		}
-		return event;
+		return events;
 	}
 
-	protected List<Attachment> applyInternalTransformations(
-			List<Map<String, String>> details) {
-		List<Attachment> attachments = new ArrayList<>();
+	private void createAlertEvent(final List<IOpsEvent> events,
+			final List<String> messageArguments) {
+		String alertType = messageArguments.get(0).toLowerCase()
+				.concat("alert");
+		LOGGER.debug("Creating event type=alert, report=" + alertType
+				+ " messageArguments=" + messageArguments);
+		IOpsEvent event = new IOpsEvent(alertType, null);
+		event.addAttributes("type", "alert");
+		event.setResponseRequired(false);
+		event.setMessageArguments(messageArguments.toArray(new String[]{}));
+		events.add(event);
+	}
+
+	protected List<List<String>> applyInternalTransformations(
+			final List<Map<String, String>> details) {
+		List<List<String>> alertDetails = new ArrayList<>();
 		LOGGER.trace("applyInternalTransformations Details: " + details);
 		details.stream()
 				.filter(alert -> "major".equalsIgnoreCase(alert.get("Severity"))
 						&& "keep".equalsIgnoreCase(alert.get("Mode")))
-				.forEach(alert -> processAlert(alert, attachments));
-		LOGGER.debug("Attachments : " + attachments);
-		return attachments;
+				.forEach(alert -> processAlert(alert, alertDetails));
+		LOGGER.debug("alertDetails : " + alertDetails);
+		return alertDetails;
 	}
 
-	private void processAlert(Map<String, String> alert,
-			final List<Attachment> attachments) {
+	private void processAlert(final Map<String, String> alert,
+			final List<List<String>> alertDetails) {
 		String message = alert.get("Message");
 		if (message.contains("PLT_EVT")) {
 			LOGGER.debug("Processing AMS alerts");
-			processAMSAlerts(message, attachments);
+			processAMSAlerts(message, alertDetails);
 		} else {
 			LOGGER.debug("Processing CTRLM alerts");
-			processCTRLAlerts(message, attachments);
+			processCTRLAlerts(message, alertDetails);
 		}
 	}
 
 	private void processCTRLAlerts(final String message,
-			final List<Attachment> attachments) {
-		String jobName = StringUtils.tokenizeToStringArray(
+			final List<List<String>> alertDetails) {
+		List<String> alertDetail = new ArrayList<>();
+		String jobId = StringUtils.tokenizeToStringArray(
 				message.substring(message.indexOf("The JOB PROD_"),
 						message.length() - 1).replaceAll("The JOB PROD_", ""),
 				" ")[0];
@@ -157,22 +172,36 @@ public class PlatformAlert extends AlertReader<Attachment> {
 				message.substring(message.indexOf("ran on node "),
 						message.length() - 1).replaceAll("ran on node", ""),
 				" ")[0];
+		String jobName = getJobName(jobId);
 		String status = message.contains("Job status-") ? "Delays" : "Failed";
-		LOGGER.debug("Adding CTRLM attachment - Job: " + jobName + " Node: "
-				+ nodeName + " Status: " + status);
-		addAttachments(attachments, CTRLM_ALERTS_HEADERS, jobName, nodeName,
-				status, getCTRLMTimeStamp(message));
+		LOGGER.debug("Found CTRLM alert with details - JobId: " + jobId
+				+ " JobName: " + jobName + " Node: " + nodeName + " Status: "
+				+ status);
+		alertDetail.addAll(Arrays.asList(new String[]{CTRLM_ALERTS, jobId,
+				jobName, nodeName, status, getCTRLMTimeStamp(message)}));
+		alertDetails.add(alertDetail);
+	}
+
+	private String getJobName(final String jobId) {
+		String jobName = "";
+		JobConfig config = jobConfigRepository.findByJobId(jobId);
+		if (null != config)
+			jobName = config.getJobName();
+		return jobName;
 	}
 
 	private void processAMSAlerts(final String message,
-			final List<Attachment> attachments) {
+			final List<List<String>> alertDetails) {
+		List<String> alertDetail = new ArrayList<>();
 		String[] tokens = StringUtils.delimitedListToStringArray(message, "||");
 		String[] eventName = StringUtils.tokenizeToStringArray(tokens[2], " ");
 		String summary = getSummary(tokens[6]);
-		LOGGER.debug("Adding AMS attachment - eventName[1]: " + eventName[1]
-				+ " eventName[0]: " + eventName[0] + " summary: " + summary);
-		addAttachments(attachments, PLATFORM_ALERTS_HEADERS, eventName[1],
-				eventName[0], summary);
+		LOGGER.debug("Found AMS alert with details - eventName[1]: "
+				+ eventName[1] + " eventName[0]: " + eventName[0] + " summary: "
+				+ summary);
+		alertDetail.addAll(Arrays.asList(new String[]{PLATFORM_ALERTS,
+				eventName[1], eventName[0], summary}));
+		alertDetails.add(alertDetail);
 	}
 
 	private String getSummary(final String alertText) {
@@ -215,30 +244,13 @@ public class PlatformAlert extends AlertReader<Attachment> {
 		return timeStamp;
 	}
 
-	private void addAttachments(final List<Attachment> attachments,
-			final String[] headers, final String... alertDetails) {
-		Attachment attachment = new Attachment();
-		attachment.addField(new Fields(headers[0], alertDetails[0], true));
-		attachment.addField(new Fields(headers[1], alertDetails[1], true));
-
-		if (alertDetails.length > 3) {
-			attachment.addField(new Fields(headers[2], alertDetails[2], true));
-			attachment.addField(new Fields(headers[3], alertDetails[3], true));
-		} else {
-			attachment.addField(new Fields(headers[2], alertDetails[2], false));
-		}
-
-		attachment.setColor("#F35A00");
-		attachments.add(attachment);
-	}
-
 	@Override
 	protected String getReportName() {
 		return "platformalert";
 	}
 
 	@Override
-	protected void applyTransformations(List<Attachment> details)
+	protected void applyTransformations(List<List<String>> details)
 			throws ParseException {
 	}
 }
