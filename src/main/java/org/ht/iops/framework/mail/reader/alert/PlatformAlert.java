@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -231,8 +232,8 @@ public class PlatformAlert extends AlertReader<List<String>> {
 			dateString = matcher.group(1);
 		}
 		try {
-			Date alertTimeStamp = new SimpleDateFormat(DATE_FORMATS[0])
-					.parse(dateString);
+			Date alertTimeStamp = new SimpleDateFormat(DATE_FORMATS[0],
+					Locale.UK).parse(dateString);
 			timeStamp = alertTimeStamp.toString();
 			LOGGER.trace("getCTRLMTimeStamp(String) dateString: " + dateString
 					+ " parsed timeStamp: " + timeStamp);
