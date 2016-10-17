@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -232,8 +233,10 @@ public class PlatformAlert extends AlertReader<List<String>> {
 			dateString = matcher.group(1);
 		}
 		try {
-			Date alertTimeStamp = new SimpleDateFormat(DATE_FORMATS[0],
-					Locale.UK).parse(dateString);
+			SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMATS[0],
+					Locale.UK);
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+			Date alertTimeStamp = dateFormat.parse(dateString);
 			timeStamp = alertTimeStamp.toString();
 			LOGGER.trace("getCTRLMTimeStamp(String) dateString: " + dateString
 					+ " parsed timeStamp: " + timeStamp);
