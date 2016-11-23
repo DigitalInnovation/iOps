@@ -112,7 +112,8 @@ public class IncidentReader extends BaseMailReader {
 		hasText(mailTokens.get("summary"));
 		transformedTokens.put("summary",
 				mailTokens.get("incident") + " | " + mailTokens.get("summary"));
-		transformedTokens.put("description", mailTokens.get("description"));
+		transformedTokens.put("description",
+				mailTokens.get("description").replaceAll("<br>", ""));
 		transformedTokens.put("worktype", "Incident");
 		getLabels(mailTokens, transformedTokens);
 		transformedTokens.put("owner", "ayadav");
