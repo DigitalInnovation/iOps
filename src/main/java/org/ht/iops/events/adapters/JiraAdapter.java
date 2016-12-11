@@ -73,6 +73,13 @@ public class JiraAdapter
 					.findByNameAndType("jirapriority", priority);
 			if (null != config) {
 				request.setPriority(config.getValue());
+				if ("Critical".equals(config.getType())
+						|| "High".equals(config.getType())) {
+					String lablels = request.getLabels();
+					lablels = hasText(lablels)
+							? lablels + "," + "Expedite"
+							: "";
+				}
 			}
 		}
 	}
@@ -97,7 +104,7 @@ public class JiraAdapter
 		tokens.put("summary",
 				createEvent.getSource().getMailData().getSubject());
 		tokens.put("issues", response.getIssues());
-		return new EmailEvent<IOpsEmailEvent>(
+		return new EmailEvent<>(
 				new IOpsEmailEvent(createEvent.getSource(), tokens));
 	}
 
