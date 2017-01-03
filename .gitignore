@@ -56,3 +56,4 @@ rebel.xml
 cov/
 cov-int/
 /.apt_generated/
+/.nb-gradle/

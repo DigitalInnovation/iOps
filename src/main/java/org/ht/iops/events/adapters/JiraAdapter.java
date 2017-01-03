@@ -64,6 +64,11 @@ public class JiraAdapter
 			request.setLinkJira(Boolean
 					.parseBoolean(iOpsEvent.getAttributes().get("linkJira")));
 		}
+
+		if (hasText(iOpsEvent.getAttributes().get("incident"))) {
+			request.setIncident(Boolean
+					.parseBoolean(iOpsEvent.getAttributes().get("incident")));
+		}
 	}
 
 	private void setPriority(JiraRestRequest request, IOpsEvent iOpsEvent) {
@@ -73,12 +78,11 @@ public class JiraAdapter
 					.findByNameAndType("jirapriority", priority);
 			if (null != config) {
 				request.setPriority(config.getValue());
-				if ("Critical".equals(config.getType())
-						|| "High".equals(config.getType())) {
-					String lablels = request.getLabels();
-					lablels = hasText(lablels)
-							? lablels + "," + "Expedite"
-							: "";
+				if ("Critical".equals(priority) || "High".equals(priority)) {
+					String labels = request.getLabels();
+					labels = hasText(labels) ? labels + "," : "";
+					labels += "Expedite";
+					request.setLabels(labels);
 				}
 			}
 		}

@@ -118,7 +118,8 @@ public class IncidentReader extends BaseMailReader {
 		getLabels(mailTokens, transformedTokens);
 		transformedTokens.put("owner", "ayadav");
 		transformedTokens.put("priority", mailTokens.get("priority"));
-		transformedTokens.put("linkJira", "true");
+		transformedTokens.put("linkJira", "false");
+		transformedTokens.put("incident", "true");
 		createJQL(mailTokens, transformedTokens);
 		return transformedTokens;
 

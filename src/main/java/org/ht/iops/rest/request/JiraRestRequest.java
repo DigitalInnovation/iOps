@@ -19,6 +19,7 @@ public class JiraRestRequest extends RestRequest {
 	private boolean forceCreate;
 	private String jql;
 	private boolean linkJira;
+	private boolean incident;
 
 	/**
 	 * @return the summary
@@ -138,7 +139,8 @@ public class JiraRestRequest extends RestRequest {
 				+ originalEstimate + ", remainingEstimate=" + remainingEstimate
 				+ ", issueType=" + issueType + ", customFields=" + customFields
 				+ ", priority=" + priority + ", forceCreate=" + forceCreate
-				+ ", jql=" + jql + ", linkJira=" + linkJira + "]";
+				+ ", jql=" + jql + ", linkJira=" + linkJira + ", incident="
+				+ incident + "]";
 	}
 
 	/**
@@ -222,5 +224,20 @@ public class JiraRestRequest extends RestRequest {
 	 */
 	public void setLinkJira(boolean linkJira) {
 		this.linkJira = linkJira;
+	}
+
+	/**
+	 * @return the incident
+	 */
+	public boolean isIncident() {
+		return incident;
+	}
+
+	/**
+	 * @param incident
+	 *            the incident to set
+	 */
+	public void setIncident(boolean incident) {
+		this.incident = incident;
 	}
 }
