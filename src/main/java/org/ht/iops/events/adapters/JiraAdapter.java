@@ -93,7 +93,16 @@ public class JiraAdapter
 		Map<String, String> customFields = new HashMap<>();
 		customFields.put("customfield_12735",
 				iOpsEvent.getAttributes().get("worktype"));
+		setPatchFields(request, customFields);
 		request.setCustomFields(customFields);
+	}
+
+	private void setPatchFields(final JiraRestRequest request,
+			final Map<String, String> customFields) {
+		customFields.put("customfield_13302", "1970-01-01T00:00:00.0+0000");
+		customFields.put("customfield_13301", "1970-01-01T00:00:00.0+0000");
+		customFields.put("customfield_13303", "none required");
+		customFields.put("customfield_13304", "None");
 	}
 
 	@Override
