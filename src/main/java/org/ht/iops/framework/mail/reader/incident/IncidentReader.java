@@ -61,11 +61,12 @@ public class IncidentReader extends BaseMailReader {
 
 	private Map<String, String> parseSubject(final MailData mailData) {
 		hasText(mailData.getSubject(), "Invalid details recieved.");
-		String[] tokens = parseSubjectTokens(mailData.getSubject());
+		String[] tokens = parseSubjectTokens(
+				mailData.getSubject().replaceFirst("FW: ", ""));
 		notNull(tokens, "Invalid details recieved.");
 		isTrue(tokens.length == 4, "Invalid details recieved.");
 		Map<String, String> subjectTokens = new HashMap<>();
-		subjectTokens.put("priority", tokens[0].replaceAll("FW: ", "").trim());
+		subjectTokens.put("priority", tokens[0]);
 		subjectTokens.put("incident", tokens[1]);
 		subjectTokens.put("details", tokens[2]);
 		subjectTokens.put("summary", tokens[2]);
