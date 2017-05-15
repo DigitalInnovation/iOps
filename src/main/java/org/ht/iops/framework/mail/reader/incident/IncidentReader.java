@@ -61,18 +61,38 @@ public class IncidentReader extends BaseMailReader {
 
 	private Map<String, String> parseSubject(final MailData mailData) {
 		hasText(mailData.getSubject(), "Invalid details recieved.");
-		String[] tokens = mailData.getSubject().split("-", 3);
+		String[] tokens = parseSubjectTokens(mailData.getSubject());
 		notNull(tokens, "Invalid details recieved.");
-		isTrue(tokens.length == 3, "Invalid details recieved.");
+		isTrue(tokens.length == 4, "Invalid details recieved.");
 		Map<String, String> subjectTokens = new HashMap<>();
 		subjectTokens.put("priority", tokens[0].replaceAll("FW: ", "").trim());
-		subjectTokens.put("incident", tokens[1].trim());
-		subjectTokens.put("details", tokens[2].trim());
-		subjectTokens.put("summary", StringUtils.tokenizeToStringArray(
-				tokens[2].trim().replaceAll("RE:", "").replaceAll("FW:", ""),
-				":")[1]);
+		subjectTokens.put("incident", tokens[1]);
+		subjectTokens.put("details", tokens[2]);
+		subjectTokens.put("summary", tokens[2]);
+		subjectTokens.put("queueName", tokens[3]);
 		LOGGER.debug("Subject tokens: " + subjectTokens);
 		return subjectTokens;
+	}
+
+	private String[] parseSubjectTokens(final String subject) {
+		String incidentName = subject.substring(0, subject.indexOf("Priority:"))
+				.replaceAll("Incident ", "");
+		incidentName = incidentName.substring(0, incidentName.indexOf(" "));
+
+		String priority = subject
+				.substring(subject.indexOf("Priority:"),
+						subject.indexOf("Description:"))
+				.replaceAll("Priority:", "").replace(".", "").trim();
+
+		String details = subject.substring(subject.indexOf("Description:"))
+				.replaceAll("Description:", "").trim();
+
+		String queueName = subject
+				.substring(subject.indexOf("has been assigned to your group '"))
+				.replaceAll("has been assigned to your group '", "");
+		queueName = queueName.substring(0, queueName.indexOf("'."));
+
+		return new String[]{priority, incidentName, details, queueName};
 	}
 
 	@Override
@@ -136,8 +156,7 @@ public class IncidentReader extends BaseMailReader {
 
 	private void getLabels(final Map<String, String> mailTokens,
 			final Map<String, String> transformedTokens) {
-		String queueLabel = resolveQueue(
-				mailTokens.get("details").split(":")[0].trim());
+		String queueLabel = resolveQueue(mailTokens.get("queueName"));
 		if (StringUtils.hasText(queueLabel)) {
 			transformedTokens.put("labels", queueLabel);
 		}
